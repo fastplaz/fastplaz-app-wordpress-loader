@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <Compiler Value="C:\lazarus-1.2.6\fpc\2.6.4\bin\i386-win32\fpc.exe" Date="1162572796"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi -FiD:\garapan\FastPlaz\source\FastPlaz-wordpress\source\wordpress\lib\i386-win32 -FuD:\garapan\FastPlaz\source\core\tools\lib\i386-win32 -FuC:\lazarus-1.2.6\lcl\units\i386-win32\win32 -FuC:\lazarus-1.2.6\lcl\units\i386-win32 -FuC:\lazarus-1.2.6\components\lazutils\lib\i386-win32 -FuC:\lazarus-1.2.6\packager\units\i386-win32 -FuD:\garapan\FastPlaz\source\FastPlaz-wordpress\source\wordpress\ -FUD:\garapan\FastPlaz\source\FastPlaz-wordpress\source\wordpress\lib\i386-win32\ -l -FED:\garapan\FastPlaz\source\FastPlaz-wordpress\public_html\ -owordpress.bin -dLCL -dLCLwin32 wordpress.lpr"/>
-</CONFIG>

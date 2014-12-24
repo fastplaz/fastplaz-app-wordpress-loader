@@ -63,6 +63,6 @@ node_modules
 dist
 libs
 
-# fastplaz example
-source/db/simple_contacts/lib/*
-source/db/simple_contacts/lib/backup/*
+# fastplaz - wordpress
+source/wordpress/lib/*
+source/wordpress/lib/backup/*
