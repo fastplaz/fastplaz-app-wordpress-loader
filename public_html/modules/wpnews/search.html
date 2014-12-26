@@ -1,0 +1,16 @@
+<header class="archive-header">
+  <h1 class="archive-title">Hasil pencarian : <a href="{$baseurl}/?s={search}">{search}</a></h1>
+</header>
+
+<article id="post-34" class="post-34 post type-post status-publish format-standard hentry category-general tag-hello">
+<div class="entry-content ">
+    <ul class="list recentposts-widget ">
+	{foreach from=$news item=aItem type=table}
+	<li><a href="{$baseurl}/{aItem.post_date dateformat=YYYY}/{aItem.post_date dateformat=mm}/{aItem.post_name}/">{aItem.post_title}</a>
+    </li>
+	{/foreach from=$news}
+    </ul>
+</div>
+</article>
+
+

@@ -1,0 +1,107 @@
+	<div id="header">
+        <a style="display:none" href="http://www.silatindonesia.com/?rel=author">Silat Indonesia</a>
+   		<div class="top-line"></div>
+
+			<!-- START Headline and Date -->
+			<div class="container">
+	   			<div class="row-fluid">
+	   				<div class="span12">
+	   					<div class="top-info">
+	   						<div class="row-fluid">
+
+	   							<!-- start Headline section -->
+	   							<div class="span6 min-height">
+{text mod=wpnews func=lastnews id="js-news" class="js-hidden" number=7 category=cover-story}
+	   							</div> <!-- /span6 min-height-->
+
+	   							<!-- start Date section -->
+		   						<div class="span6 min-height">
+									<div id="timeNow"></div>
+									<div class="floatLeft">_____ Juni 2014 / </div>
+		   						</div> <!-- /span6 min-height -->
+
+	   						</div> <!-- /row-fluid -->
+	   					</div> <!-- /top-info -->
+	   				</div> <!-- /span12 -->
+	   			</div> <!-- /row-fluid -->
+	   		</div> <!-- /container -->
+			<!-- END headline and date -->
+
+		    <!-- START Logo and Banner -->
+		 	<div class="container">
+		    	<div id="top" class="row-fluid">
+
+	        		<!-- start Logo section -->
+		        	<div class="span2">
+				    	<div id="logo" class="blog-thumbx">
+		  			  	<a href="{baseurl}/"><img src="{themefullpath}/img/logo.png" alt="" /></a>
+
+						</div> <!-- #logo -->
+          			</div><!-- /span4 -->
+
+          			<!-- start Banner section -->
+          			<div class="span5">
+		  		    	<div id="banner">
+                            <a href="{baseurl}/"><img src="{themefullpath}/img/banner/banner-top.png" alt="" /></a>
+                        </div><!-- /banner -->
+          			</div><!-- /span8 -->
+
+          			<div class="span5">
+                    &nbsp;
+                    </div>
+
+        		</div><!-- /row-fluid -->
+        		<!-- END Logo and Banner -->
+
+        <!-- START Menu -->
+		<div id="mainmenu-block-bg">
+			<div class="container">
+	  			<div class="row-fluid">
+	  				<div class="span9 xmin-height">
+		  				<div class="navigation">
+		    				<div id="menu">
+<div class="menu-main-menu-container">
+<!-- menu -->
+{text mod=wpnews func=pagesmenu type=nav id="menu-main-menu" class="sf-menu"}
+<!-- /menu -->
+</div>
+		    				</div> <!-- /menu -->
+		  				</div>  <!-- /navigation -->
+					</div> <!-- /span19 -->
+                    <div class="span3">
+    <form method="get" class="searchform" action="{baseurl}">
+    <input type="text" class="field s" name="s" placeholder="search this site..."  />
+	</form>
+                    </div>
+      			</div><!-- /row-fluid -->
+  			</div> <!-- container -->
+  		</div> <!-- mainmenu-block-bg -->
+		<!-- END Menu -->
+
+	  </div><!-- /container -->
+    <!-- END TOP BLOCK -->
+
+  </div> <!-- #header -->
+
+<script type="text/javascript">
+jQuery.noConflict()(function($){
+	"use strict";
+	$(document).ready(function() {
+		$('#js-news').ticker({
+			ajaxFeed:false,
+			feedUrl:false,
+			feedType:'xml',
+			htmlFeed:true,
+			debugMode:false,
+			controls:false,
+			titleText:'Headline',
+			displayType:'fade',
+			direction:'ltr',
+			pauseOnItems: 2000,
+			fadeInSpeed:600,
+			fadeOutSpeed:300
+		});
+	});
+});
+</script>
+

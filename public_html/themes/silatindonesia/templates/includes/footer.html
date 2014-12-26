@@ -1,0 +1,125 @@
+<div id="footer">
+<div class="container footer">
+    <div class="row-fluid">
+        <div class="span9">
+            <div class="menu-footer_menu-container">
+<ul id="menu-footer_menu" class="footer-menu">
+<li id="menu-item-31" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-31"><a href="{$baseurl}">Home</a></li>
+<li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="{$baseurl}/pages/hubungi-kami/">Contact Us</a></li>
+<li id="menu-item-35" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-35"><a href="{$baseurl}/pages/terimakasih/">Thanks You</a></li>
+</ul>
+            </div>
+        </div> <!-- /span9 -->
+
+<div class="span3">
+    <form method="get" class="searchform" action="{$baseurl}">
+    <input type="text" class="field s" name="s" placeholder="search this site..."  />
+	</form>
+</div> <!-- /span3 -->
+
+	</div> <!-- /row-fluid -->
+</div>
+
+	<div class="footer-bottom">
+		<div class="container">
+			<div class="row-fluid">
+				<div class="span3 copyright">
+					Enhanced by <a href="http://www.fastplaz.com/">FastPlaz.</a>
+                </div>
+                <div class="span3" style="display:none;">
+                    Processing Time : {debug type=time}
+                </div>
+				<div class="span6 add-info">
+                <a href="http://www.silatindonesia.com">Silat Indonesia</a>
+                <a href="http://www.sahabatsilat.com">Sahabat Silat</a>
+                <a href="http://www.videosilat.com">Video Silat Indonesia</a>
+                <a href="http://www.ruangdata.com">RuangData</a>
+                <a href="http://www.kioss.com">KiOSS Project</a>
+                </div>
+			</div>
+		</div>
+	</div>
+</div><!-- #footer -->
+
+
+<script type="text/javascript">
+jQuery.noConflict()(function($){
+	$(document).ready(function() {
+
+    //$('#top-tab a:last').tab('show');
+
+	function ct_get_time() {
+	  	now=new Date();
+
+	 	hour=now.getHours();
+	 	min=now.getMinutes();
+	 	sec=now.getSeconds();
+
+		if (min<=9) { min="0"+min; }
+		if (sec<=9) { sec="0"+sec; }
+
+		time = ((hour<=9) ? "0"+hour : hour) + ":" + min + ":" + sec;
+
+		if (document.getElementById) { document.getElementById('timeNow').innerHTML = time; }
+			else if (document.layers) {
+				 document.layers.theTime.document.write(time);
+				 document.layers.theTime.document.close(); }
+
+				 setTimeout(ct_get_time, 1000);
+		}
+		window.onload = ct_get_time;
+	});
+});
+</script>
+
+<script type="text/javascript">
+//  var _gaq = _gaq || [];
+//  _gaq.push(['_setAccount', 'myid']);
+//  _gaq.push(['_setDomainName', 'silatindonesia.com']);
+//  _gaq.push(['_trackPageview']);
+//
+//  (function() {
+//    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+//    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+//  })();
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+jQuery.noConflict()(function($){
+	$(window).load(function() {
+
+		var $container = $('#entry-blog');
+
+		  $container.masonry({
+		    itemSelector: '.entry-post',
+		    resizeable: true,
+		    isAnimated: true,
+		  });
+	});
+});
+/* ]]> */
+</script>
+
+<script type='text/javascript' src='{themefullpath}/js/superfish.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/prettify.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/jquery.flexslider-min.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/jquery.ticker.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/jquery.prettyphoto.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/jquery.masonry.min.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/scrolltopcontrol.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/bootstrap.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/custom.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/jquery.tweet.min.js'></script>
+<script type='text/javascript' src='{themefullpath}/js/spectragram.min.js'></script>
+
+<script src='http://connect.facebook.net/en_US/all.js#xfbml=1'/></script>
+
+<script type="text/javascript">
+document.write(unescape('%3Cscript type="text/javascript" src="'+
+document.location.protocol+'//counter.goingup.com/js/tracker.js?st=xde34z7&amp;b=5"%3E%3C/script%3E'));
+jQuery(document).ready(function() {
+    jQuery('.fb-app').css({"display":""});
+});
+</script>
+

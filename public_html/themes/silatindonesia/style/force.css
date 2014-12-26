@@ -1,0 +1,236 @@
+#top {
+	max-height:95px;
+}
+#top img {
+}
+#tdlogo {
+	width:110px;
+}
+#tdlogo img {
+	width:80%;
+}
+#tdbanner img {
+	width:100%;
+	max-width:450px;
+}
+
+#logo {
+}
+#logo img {
+}
+
+#logo.blog-thumb{
+	margin-bottom:0px;
+	zwidth:auto;
+}
+
+.navigation select {
+	margin:2px 0;
+}
+
+#home-slider {
+	min-height:300px;
+	background:#f0f0f0;
+	margin-bottom:10px;
+}
+
+#banner {
+	float:left;
+	width:100%;
+}
+#banner img {
+}
+.banner-logo {
+	text-align:center;
+	max-width:350px;
+}
+
+.banner-logo  img{
+	width:90%;
+}
+
+.searchform {
+	margin:2px 5px 0px 0px;
+}
+.searchform input{
+	height:18px;
+}
+
+/**
+ * Entry Meta
+ * -----------------------------------------------------------------------------
+ */
+
+.entry-meta {
+	clear: both;
+	color: #767676;
+    color:#111;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 1.3333333333;
+}
+
+.entry-meta a {
+	color: #767676;
+}
+
+.entry-meta a:hover {
+	color: #41a62a;
+}
+
+.site-content .entry-meta {
+	background-color: #fff;
+	margin-bottom: 8px;
+}
+
+.site-content footer.entry-meta {
+	margin: 24px auto 0;
+	padding: 0 10px;
+}
+
+/* Tag links style */
+
+.entry-meta .tag-links a {
+	background-color: #767676;
+	border-radius: 0 2px 2px 0;
+	color: #fff;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.2727272727;
+	margin: 2px 4px 2px 10px;
+	padding: 3px 7px;
+	position: relative;
+	text-transform: uppercase;
+}
+
+.entry-meta .tag-links a:hover {
+	background-color: #41a62a;
+	color: #fff;
+}
+
+.entry-meta .tag-links a:before {
+	border-top: 10px solid transparent;
+	border-right: 8px solid #767676;
+	border-bottom: 10px solid transparent;
+	content: "";
+	height: 0;
+	position: absolute;
+	top: 0;
+	left: -8px;
+	width: 0;
+}
+
+.entry-meta .tag-links a:hover:before {
+	border-right-color: #41a62a;
+}
+
+.entry-meta .tag-links a:after {
+	background-color: #fff;
+	border-radius: 50%;
+	content: "";
+	height: 4px;
+	position: absolute;
+	top: 8px;
+	left: -2px;
+	width: 4px;
+}
+
+
+.breadcrumb {
+	padding:0px;
+	background: url(../img/texture.png) left top repeat;
+}
+.breadcrumb > li + li::before {
+	color:#cccccc;
+	content: "/ ";
+	padding: 0 2px;
+}
+.breadcrumb a {
+	padding:0 5px;
+}
+
+article {
+	margin-top:5px;
+}
+
+h1.entry-title {
+	margin-bottom:10px;
+}
+
+.widget  p {
+	margin-bottom:0px;
+}
+
+.list li a{
+	display:block;
+}
+.list .first-post{
+	margin:0;
+	padding:3px 0;
+}
+.list li:hover{
+	background:#fcfcfc;
+}
+
+/*
+NGGallery
+*/
+
+img.ngg-singlepic {
+	width:auto;
+}
+
+.ngg-left {
+}
+
+/* social plugins */
+.fb-app {
+	display:none;
+}
+
+
+/* 
+=======================================================================================================================
+	*
+	*	Responsive Styles
+	*
+=======================================================================================================================	
+*/
+
+@media (max-width: 767px) { 
+	#tdlogo {
+	width:90px;
+	}
+	#info-date {
+		display:none;
+	}
+}
+
+@media (max-width: 600px) { 
+}
+
+@media (max-width: 540px) { 
+}
+
+@media  (max-width: 480px) { 
+}
+
+@media (max-width: 320px) { 
+}
+
+@media (max-width: 240px) { 
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+}
+
+@media (min-width: 980px) and (max-width: 1024px) { 
+}
+
+@media (max-width: 1200px) { 
+	.sf-menu a {
+		font-size:12px;
+	}
+}
+

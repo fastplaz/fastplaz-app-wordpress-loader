@@ -9,7 +9,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="Wordpress"/>
+      <Title Value="FastPlaz for Wordpress"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -38,7 +38,7 @@
         <PackageName Value="fastplaz_runtime"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="16">
       <Unit0>
         <Filename Value="wordpress.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -54,6 +54,70 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="main"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="src\app\wordpress\model\wordpress_featuredimage_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_featuredimage_model"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="src\app\wordpress\model\wordpress_news_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_news_model"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="src\app\wordpress\model\wordpress_nggallery_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_nggallery_model"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="src\app\wordpress\model\wordpress_options_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_options_model"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="src\app\wordpress\model\wordpress_pages_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_pages_model"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="src\app\wordpress\model\wordpress_tags_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_tags_model"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="src\app\wordpress\model\wordpress_terms_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_terms_model"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="define.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\core\FastPlaz\src\library\html_lib.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="html_lib"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_category_controller"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="src\app\wordpress\wordpress_tags_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_tags_controller"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="src\app\wordpress\wordpress_pages_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_pages_controller"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_news_controller"/>
+      </Unit15>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -64,6 +128,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\..\..\core\FastPlaz\src\library;src\app\wordpress\model;src\app\wordpress"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>

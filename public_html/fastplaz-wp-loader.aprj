@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AksiIDE>
+  <project>
+    <name>FastPlaz-WP Loader</name>
+    <module/>
+    <moduleid/>
+    <framework>
+      <name>FastPlaz</name>
+    </framework>
+    <site>
+      <RunAs>0</RunAs>
+      <url>http://wordpress.fastplaz.com/</url>
+    </site>
+    <database/>
+    <js/>
+    <git/>
+  </project>
+</AksiIDE>

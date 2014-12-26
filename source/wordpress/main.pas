@@ -33,7 +33,12 @@ begin
 end;
 
 procedure TMainModule.RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse; var Handled: boolean);
+var
+  html : string;
 begin
+  DataBaseInit;
+  LanguageInit;
+
   Tags['$maincontent'] := @Tag_MainContent_Handler; //<<-- tag $maincontent handler
   Response.Content := ThemeUtil.Render();
   Handled := True;
