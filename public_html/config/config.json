@@ -1,7 +1,6 @@
 {
   "systems" : {
-    "sitename" : "FastPlaz",
-    "sitenamex" : "Example FastPlaz App for WordPress Loader",
+    "sitename" : "Example FastPlaz App for WordPress Loader",
     "slogan" : "Fast Pascal Framework for Web Development",
     "baseurl" : "",
     "admin_email" : "webmaster@coba.com",
@@ -11,11 +10,10 @@
     "language_default" : "id",
     "theme_enable" : true,
     "theme" : "wordpress-twentyfourteen",
-    "themex" : "silatindonesia",
-    "cache" : "filex",
+    "cache" : "none",
     "temp" : "ztemp",
     "error_url" : "\/",
-    "error_redirect" : false
+    "error_redirect" : true
   },
   "database" : {
     "default" : {
@@ -25,18 +23,6 @@
       "username" : "root",
       "password" : "root",
       "database_name" : "amana_fastp",
-      "prefix" : "wp_",
-      "library" : "..\/libs\/win\/libmysql.dll"
-    }
-  },
-  "databasex" : {
-    "default" : {
-      "hostname" : "localhost",
-      "driver" : "MySQL 5.0",
-      "tabletype" : "myisam",
-      "username" : "root",
-      "password" : "root",
-      "database_name" : "cosil_si",
       "prefix" : "wp_",
       "library" : "..\/libs\/win\/libmysql.dll"
     }

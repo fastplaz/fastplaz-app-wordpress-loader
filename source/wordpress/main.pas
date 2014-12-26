@@ -24,7 +24,7 @@ type
 
 implementation
 
-uses theme_controller, common;
+uses theme_controller, common, wordpress_news_controller;
 
 constructor TMainModule.CreateNew(AOwner: TComponent; CreateMode: integer);
 begin
@@ -58,9 +58,11 @@ begin
   begin
     Tags['$maincontent'] := @Tag_Search_ContentHandler; //<<-- tag search-content handler
     Response.Content := ThemeUtil.Render(nil, 'master');
-  end else begin
+  end
+  else
+  begin
     Tags['$maincontent'] := @Tag_MainContent_Handler; //<<-- tag $maincontent handler
-    Response.Content := ThemeUtil.Render(nil, 'home');
+    Response.Content := ThemeUtil.Render(nil, 'master'); // try with 'home'
   end;
 
   Handled := True;
@@ -71,17 +73,19 @@ begin
   News.SearchNews(_GET['s']);
   ThemeUtil.AssignVar['$news'] := @News.Data;
   ThemeUtil.Assign('search', _GET['s']);
-  Result:=ThemeUtil.RenderFromContent(nil, '', 'modules/wpnews/search.html');
+  Result := ThemeUtil.RenderFromContent(nil, '', 'modules/wpnews/search.html');
 end;
 
 function TMainModule.Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
 begin
 
-  // your code here
-  Result := h3('Hello "Main" Module ... FastPlaz !');
+  with TWPNewsWebModule.CreateNew(self, 0) do
+  begin
+    Result := View;
+    Free;
+  end;
 
 end;
 
 
 end.
-
