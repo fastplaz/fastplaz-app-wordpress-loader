@@ -1,0 +1,35 @@
+<header id="masthead" class="site-header" role="banner">
+	<div class="header-main">
+		<h1 class="site-title"><a href="[$baseurl]" rel="home">[text mod=wpnews func=getoption name=blogname]</a></h1>
+
+		<div class="search-toggle">
+			<a href="#search-container" class="screen-reader-text">Search</a>
+		</div>
+
+		<nav id="primary-navigation" class="site-navigation primary-navigation" role="navigation">
+			<button class="menu-toggle">Primary Menu</button>
+			<a class="screen-reader-text skip-link" href="#content">Skip to content</a>
+            <!--
+			<div class="nav-menu"><ul><li class="page_item page-item-6"><a href="[$baseurl]/about/">About</a></li><li class="page_item page-item-12"><a href="[$baseurl]/developer/">Developer</a></li><li class="page_item page-item-8"><a href="[$baseurl]/documentation/">Documentation</a></li><li class="page_item page-item-10"><a href="[$baseurl]/download/">Download</a></li><li class="page_item page-item-16"><a href="[$baseurl]/faq/">FAQ</a></li></ul></div>
+            -->
+            [text mod=wpnews func=pagesmenu type=nav]
+		</nav>
+
+        <div class="" style="float:right;line-height:30px;margin:9px 25px;">
+			<a href="[$thisurl]?lang=en"><img src="[$themefullpath]/assets/img/flags/en_US.png"></a> | <a href="[$thisurl]?lang=id"><img src="[$themefullpath]/assets/img/flags/id_ID.png"></a>
+        </div>
+
+	</div>
+
+	<div id="search-container" class="search-box-wrapper hide">
+		<div class="search-box">
+			<form role="search" method="get" class="search-form" action="[$baseurl]">
+			<label>
+				<span class="screen-reader-text">Search for:</span>
+				<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" title="Search for:" />
+			</label>
+			<input type="submit" class="search-submit" value="Search" />
+		</form>			</div>
+	</div>
+</header><!-- #masthead -->
+

@@ -1,0 +1,43 @@
+{
+  "systems" : {
+    "sitename" : "Example FastPlaz App for WordPress Loader",
+    "slogan" : "Fast Pascal Framework for Web Development",
+    "baseurl" : "",
+    "admin_email" : "webmaster@coba.com",
+    "development" : true,
+    "debug" : true,
+    "module_default" : "main",
+    "language_default" : "id",
+    "theme_enable" : true,
+    "theme" : "wordpress-twentyfourteen",
+    "cache" : "none",
+    "temp" : "ztemp",
+    "error_url" : "\/",
+    "error_redirect" : true
+  },
+  "database" : {
+    "default" : {
+      "hostname" : "localhost",
+      "driver" : "MySQL 5.0",
+      "tabletype" : "myisam",
+      "username" : "root",
+      "password" : "root",
+      "database_name" : "amana_fastp",
+      "prefix" : "wp_",
+      "library" : "..\/libs\/win\/libmysql.dll"
+    }
+  },
+  "log" : {
+    "enabled" : true,
+    "level" : 4,
+    "destination" : "file",
+    "dir" : "ztemp\/error_log"
+  },
+  "wordpress" : {
+    "path" : "\/id",
+    "base_url" : "http:\/\/www.fastplaz.com",
+    "plugins" : {
+      "polylang" : true
+    }
+  }
+}

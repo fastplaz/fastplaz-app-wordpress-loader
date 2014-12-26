@@ -1,0 +1,15 @@
+<header class="entry-header">
+  <h1 class="archive-title">Category Archives: <a href="[$category_url]">[$category_title]</a></h1>
+</header>
+
+<article id="post-34" class="post-34 post type-post status-publish format-standard hentry category-general tag-hello">
+<div class="entry-content ">
+    <ul class="list recentposts-widget ">
+	[foreach from=$news item=aItem type=table]
+	<li><a href="[$baseurl][aItem.post_date dateformat=YYYY]/[aItem.post_date dateformat=mm]/[aItem.post_name]/">[aItem.post_title]</a></li>
+	[/foreach from=$news]
+    </ul>
+</div>
+</article>
+
+

@@ -1,0 +1,27 @@
+
+
+.breadcrumb {
+	margin-left:20px;
+	list-style: none outside none;
+	display: block;
+	background: url(../img/texture.png) left top repeat;
+}
+
+.breadcrumb > li {
+display: inline-block;
+text-shadow: 0px 1px 0px #FFFFFF;
+font-size:12px;
+}
+.breadcrumb > li + li::before {
+	color:#cccccc;
+	content: "/ ";
+	padding: 0 2px;
+}
+.breadcrumb a {
+	padding:2px 5px;
+	color:#333;
+}
+.breadcrumb li a:hover {
+	background:#ccc;
+}
+
