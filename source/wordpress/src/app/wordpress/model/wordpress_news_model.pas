@@ -88,16 +88,18 @@ end;
 
 function TWordpressNews.SearchNews(const Keyword: string): boolean;
 begin
-  die('qqq');
   AddInnerJoin( 'term_relationships', 'object_id', 'posts.ID', []);
-  GroupBy(AppData.tablePrefix + '_posts.ID');
-  Find(['((' + AppData.tablePrefix + '_posts.post_title LIKE ''%' + Keyword + '%'')OR (' +
-    AppData.tablePrefix + '_posts.post_content LIKE ''%' + Keyword + '%''))', AppData.tablePrefix +
-    '_posts.post_type IN (''post'', ''page'', ''attachment'', ''hs_faq'')', '(' + AppData.tablePrefix +
-    '_posts.post_status = ''publish'' OR ' + AppData.tablePrefix + '_posts.post_author = 1 AND ' +
-    AppData.tablePrefix + '_posts.post_status = ''private'')'],
-    AppData.tablePrefix + '_posts.post_title LIKE ''%' + Keyword + '%'' DESC, ' + AppData.tablePrefix +
-    '_posts.post_date DESC', 10
+  GroupBy( AppData.tablePrefix + 'posts.ID');
+  Find([
+    '((' +
+    AppData.tablePrefix + 'posts.post_title LIKE ''%' + Keyword + '%'')OR (' +
+    AppData.tablePrefix + 'posts.post_content LIKE ''%' + Keyword + '%''))',
+    AppData.tablePrefix + 'posts.post_type IN (''post'', ''page'', ''attachment'', ''hs_faq'')', '(' +
+    AppData.tablePrefix + 'posts.post_status = ''publish'' OR ' +
+    AppData.tablePrefix + 'posts.post_author = 1 AND ' +
+    AppData.tablePrefix + 'posts.post_status = ''private'')'],
+    AppData.tablePrefix + 'posts.post_title LIKE ''%' + Keyword + '%'' DESC, ' +
+    AppData.tablePrefix + 'posts.post_date DESC', 10
     );
 end;
 

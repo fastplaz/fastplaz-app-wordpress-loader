@@ -12,12 +12,15 @@
       <Title Value="FastPlaz for Wordpress"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
+      <Icon Value="0"/>
     </General>
     <i18n>
-      <EnableI18N LFM="False"/>
+      <EnableI18N Value="True" LFM="False"/>
     </i18n>
     <VersionInfo>
-      <StringTable ProductVersion=""/>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <StringTable CompanyName="fastplaz.com" FileDescription="Fast Web Loader for Wordpress with fastplaz" OriginalFilename="wordpress.bin" ProductName="FastPlaz for Wordpress" ProductVersion="0.0.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>

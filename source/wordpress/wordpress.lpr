@@ -8,6 +8,8 @@ uses
   wordpress_terms_model, wordpress_category_controller, wordpress_tags_controller, wordpress_pages_controller,
   wordpress_news_controller;
 
+{$R *.res}
+
 begin
   Application.Title:='FastPlaz for Wordpress';
   Application.Email := Config.GetValue(_SYSTEM_WEBMASTER_EMAIL,'webmaster@' + GetEnvironmentVariable('SERVER_NAME'));

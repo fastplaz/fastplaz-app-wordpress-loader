@@ -94,10 +94,10 @@ begin
   category_id := 0;
   if category_permalink <> '' then
   begin
-    die('permmmm');
+    die('err: category_permalink');
     with TWordpressTerms.Create() do
     begin
-      AddJoin( '_term_taxonomy', 'term_id', '_terms.term_id', ['taxonomy']);
+      AddJoin( 'term_taxonomy', 'term_id', '_terms.term_id', ['taxonomy']);
       FindFirst(['taxonomy="category"', 'slug="' + category_permalink + '"'], 'name');
       if RecordCount > 0 then
       begin
@@ -127,11 +127,15 @@ begin
   if _News.RecordCount > 0 then
   begin
     lst := TStringList.Create;
+    lst.Add( '<header class="entry-header">');
+    lst.Add( '<h1 class="archive-title">Last News:</h1>');
+    lst.Add( '</header>');
+    lst.Add( '<article id="post-34" class="post-34 post type-post status-publish format-standard hentry category-general tag-hello"><div class="entry-content ">');
     if Parameter <> nil then
       if Parameter.Values['title'] <> '' then
       begin
         title := StringReplace(Parameter.Values['title'], '"', '', [rfReplaceAll]);
-        lst.Add('<div class="news-lastnews">');
+        lst.Add('<div class="news-lastnews entry-content">');
         lst.Add('<h3>' + title + '</h3>');
       end;
 
@@ -172,6 +176,7 @@ begin
     if Parameter.Values['title'] <> '' then
       lst.Add('</div>');
 
+    lst.Add( '</div></article>');
     Result := lst.Text;
     FreeAndNil(lst);
   end;
@@ -332,10 +337,13 @@ end;
 function TWPNewsWebModule.View: string;
 var
   thumbnail_url, title: string;
+  lst : TStringList;
 begin
   if Application.Request.QueryString = '' then
   begin
-    Result := GetLastNews();
+    lst := TStringList.Create;
+    Result := GetLastNews('', lst);
+    FreeAndNil( lst);
     Exit;
   end;
 
@@ -369,9 +377,9 @@ begin
   ThemeUtil.AddMeta('og:type', 'article', 'property');
   ThemeUtil.AddMeta('og:title', title, 'property');
   ThemeUtil.AddMeta('og:site_name', GetOptions('blogname'), 'property');
-  ThemeUtil.AddMeta('og:description', GetOptions('blogdescription') + ', ' + title,
-    'property');
+  ThemeUtil.AddMeta('og:description', GetOptions('blogdescription') + ', ' + title, 'property');
   ThemeUtil.AddMeta('og:image', thumbnail_url, 'property');
+  // facebook content sharing - end
 
   Result := ThemeUtil.RenderFromContent(@TagController, '', 'modules/wpnews/detail.html');
   News.AddHit(News['ID']);

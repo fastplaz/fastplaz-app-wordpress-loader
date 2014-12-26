@@ -1,6 +1,7 @@
 {
   "systems" : {
-    "sitename" : "Example FastPlaz App",
+    "sitename" : "FastPlaz",
+    "sitenamex" : "Example FastPlaz App for WordPress Loader",
     "slogan" : "Fast Pascal Framework for Web Development",
     "baseurl" : "",
     "admin_email" : "webmaster@coba.com",
@@ -48,7 +49,7 @@
   },
   "wordpress" : {
     "path" : "\/id",
-    "base_url" : "http:\/\/cache.silatindonesia.com",
+    "base_url" : "http:\/\/www.fastplaz.com",
     "plugins" : {
       "polylang" : true
     }

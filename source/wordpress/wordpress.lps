@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="24">
+    <Units Count="25">
       <Unit0>
         <Filename Value="wordpress.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -12,7 +12,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="3"/>
         <CursorPos X="20" Y="11"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit0>
       <Unit1>
         <Filename Value="routes.pas"/>
@@ -21,7 +21,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="16"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit1>
       <Unit2>
         <Filename Value="main.pas"/>
@@ -29,9 +29,9 @@
         <UnitName Value="main"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="35"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="64"/>
+        <TopLine Value="65"/>
+        <CursorPos X="61" Y="62"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -41,16 +41,16 @@
         <WindowIndex Value="0"/>
         <TopLine Value="30"/>
         <CursorPos X="50" Y="49"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit3>
       <Unit4>
         <Filename Value="src\app\wordpress\model\wordpress_news_model.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wordpress_news_model"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="62"/>
-        <CursorPos X="49" Y="74"/>
-        <UsageCount Value="64"/>
+        <TopLine Value="37"/>
+        <CursorPos X="1" Y="84"/>
+        <UsageCount Value="73"/>
       </Unit4>
       <Unit5>
         <Filename Value="src\app\wordpress\model\wordpress_nggallery_model.pas"/>
@@ -59,7 +59,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="53"/>
         <CursorPos X="40" Y="56"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit5>
       <Unit6>
         <Filename Value="src\app\wordpress\model\wordpress_options_model.pas"/>
@@ -68,7 +68,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="21" Y="30"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit6>
       <Unit7>
         <Filename Value="src\app\wordpress\model\wordpress_pages_model.pas"/>
@@ -77,25 +77,25 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="23" Y="27"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit7>
       <Unit8>
         <Filename Value="src\app\wordpress\model\wordpress_tags_model.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wordpress_tags_model"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="9"/>
+        <TopLine Value="1"/>
         <CursorPos X="20" Y="27"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit8>
       <Unit9>
         <Filename Value="src\app\wordpress\model\wordpress_terms_model.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wordpress_terms_model"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="37"/>
+        <TopLine Value="36"/>
         <CursorPos X="45" Y="53"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit9>
       <Unit10>
         <Filename Value="define.inc"/>
@@ -103,7 +103,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\..\core\FastPlaz\src\library\html_lib.pas"/>
@@ -112,7 +112,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="13"/>
         <CursorPos X="49" Y="244"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit11>
       <Unit12>
         <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
@@ -121,7 +121,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="94"/>
         <CursorPos X="80" Y="112"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit12>
       <Unit13>
         <Filename Value="src\app\wordpress\wordpress_tags_controller.pas"/>
@@ -130,7 +130,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="48"/>
         <CursorPos X="39" Y="62"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit13>
       <Unit14>
         <Filename Value="src\app\wordpress\wordpress_pages_controller.pas"/>
@@ -139,7 +139,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="73"/>
       </Unit14>
       <Unit15>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
@@ -148,9 +148,9 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="361"/>
-        <CursorPos X="43" Y="374"/>
-        <UsageCount Value="64"/>
+        <TopLine Value="117"/>
+        <CursorPos X="5" Y="133"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -158,7 +158,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit16>
       <Unit17>
@@ -167,25 +167,23 @@
         <WindowIndex Value="0"/>
         <TopLine Value="577"/>
         <CursorPos X="107" Y="594"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="30"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\..\core\FastPlaz\src\library\common.pas"/>
         <UnitName Value="common"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="96"/>
-        <CursorPos X="1" Y="108"/>
-        <UsageCount Value="21"/>
+        <TopLine Value="416"/>
+        <CursorPos X="1" Y="438"/>
+        <UsageCount Value="20"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\..\FastPlaz-wordpress-test\FastPlaz-wordpress\main.pas"/>
         <UnitName Value="main"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="44"/>
-        <CursorPos X="44" Y="51"/>
-        <UsageCount Value="31"/>
-        <Loaded Value="True"/>
+        <TopLine Value="25"/>
+        <CursorPos X="1" Y="64"/>
+        <UsageCount Value="30"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\..\..\FastPlaz-wordpress-test\FastPlaz-wordpress\routes.pas"/>
@@ -193,23 +191,23 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit20>
       <Unit21>
         <Filename Value="..\..\..\core\FastPlaz\src\systems\fastplaz_handler.pas"/>
         <UnitName Value="fastplaz_handler"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="175"/>
-        <CursorPos X="15" Y="186"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="762"/>
+        <CursorPos X="13" Y="680"/>
+        <UsageCount Value="13"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
         <UnitName Value="theme_controller"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="151"/>
-        <CursorPos X="15" Y="161"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="1087"/>
+        <CursorPos X="18" Y="1102"/>
+        <UsageCount Value="14"/>
       </Unit22>
       <Unit23>
         <Filename Value="C:\lazarus-1.2.6\fpc\2.6.4\source\packages\fcl-web\src\base\fphttp.pp"/>
@@ -217,16 +215,24 @@
         <WindowIndex Value="0"/>
         <TopLine Value="202"/>
         <CursorPos X="11" Y="213"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\core\FastPlaz\src\systems\session_controller.pas"/>
+        <UnitName Value="session_controller"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="218"/>
+        <CursorPos X="9" Y="188"/>
+        <UsageCount Value="13"/>
+      </Unit24>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="13" HistoryIndex="12">
+    <JumpHistory Count="17" HistoryIndex="16">
       <Position1>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="246" Column="51" TopLine="235"/>
+        <Caret Line="134" Column="62" TopLine="123"/>
       </Position1>
       <Position2>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
@@ -234,48 +240,64 @@
       </Position2>
       <Position3>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="245" Column="38" TopLine="226"/>
+        <Caret Line="45" Column="32" TopLine="26"/>
       </Position3>
       <Position4>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="345" Column="27" TopLine="326"/>
+        <Caret Line="57" Column="7" TopLine="38"/>
       </Position4>
       <Position5>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="241" Column="16" TopLine="237"/>
       </Position5>
       <Position6>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="121" Column="57" TopLine="106"/>
+        <Caret Line="134" Column="64" TopLine="133"/>
       </Position6>
       <Position7>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="240" Column="31" TopLine="221"/>
       </Position7>
       <Position8>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="120" Column="54" TopLine="109"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position8>
       <Position9>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="121" Column="78" TopLine="109"/>
+        <Caret Line="45" Column="32" TopLine="38"/>
       </Position9>
       <Position10>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="243" Column="47" TopLine="224"/>
+        <Caret Line="57" Column="7" TopLine="38"/>
       </Position10>
       <Position11>
-        <Filename Value="..\..\..\FastPlaz-wordpress-test\FastPlaz-wordpress\main.pas"/>
-        <Caret Line="31" Column="19" TopLine="37"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="62" Column="61" TopLine="50"/>
       </Position11>
       <Position12>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="121" Column="52" TopLine="84"/>
+        <Caret Line="243" Column="1" TopLine="234"/>
       </Position12>
       <Position13>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="393" Column="1" TopLine="381"/>
+        <Caret Line="86" Column="19" TopLine="76"/>
       </Position13>
+      <Position14>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="87" Column="17" TopLine="76"/>
+      </Position14>
+      <Position15>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="105" Column="23" TopLine="87"/>
+      </Position15>
+      <Position16>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="87" Column="17" TopLine="75"/>
+      </Position16>
+      <Position17>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="121" Column="23" TopLine="329"/>
+      </Position17>
     </JumpHistory>
   </ProjectSession>
   <EditorMacros Count="0"/>
