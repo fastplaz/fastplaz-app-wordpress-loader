@@ -1,0 +1,20 @@
+
+
+<ol class="breadcrumb">
+    <li><a href="[$baseurl]/">Home</a></li>
+[foreach from=$posts item=aItem type=table]
+    [assignadd var=parent value="/"]
+    <li><a href="[$baseurl]pages[value var=parent][aItem.post_name addassignto=parent]/">[aItem.post_title]</a></li>
+[/foreach from=$posts]
+</ol>
+
+<article id="post-[$page.ID]" class="post-[$page.ID] post type-post status-publish format-standard hentry category-general">
+  <header class="entry-header">
+    <h1 class="entry-title"><a href="[$baseurl]pages/[$page.post_name]">[$page.post_title xfilter=uppercase]</a></h1>
+  </header>
+  <div class="entry-content">
+    <p>[$page.post_content filter=nl2br]</p>
+  </div>
+</article>
+
+

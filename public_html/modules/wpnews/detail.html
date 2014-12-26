@@ -1,0 +1,61 @@
+<ol class="breadcrumb">
+  <li><a href="[$baseurl]">Home</a></li>
+  <li><a href="[$baseurl]news/">News</a></li>
+  <li class="active"><a href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/">[$news.post_title]</a></li>
+</ol>
+
+<div class="xsite-content">
+<article id="post-[$news.ID]" class="post-[$news.ID] post type-post status-publish format-standard hentry category-general">
+  <header class="entry-header">
+    <h1 class="entry-title"><a href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/">[$news.post_title xfilter=uppercase]</a></h1>
+    <div class="entry-meta">
+      <span class="entry-date">
+        <span class="pull-left">
+        Dituliskan pada <time class="entry-date" datetime="2014-05-16T16:20:21+00:00">[$news.post_date dateformat=dd MMM YYYY]</time><!-- oleh <a href="#">[$news.display_name]</a>. -->
+        </span>
+        <span class="pull-right" style="width:125px;display:none;">
+            <div class="fb-like" data-href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+        </span>
+        <span class="pull-right" style="width:60px;display:none;">
+            <div class="fb-send pull-left" data-href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/" data-colorscheme="light"></div>
+        </span>
+      </span>
+    </div>
+  </header>
+
+  <span class="clearfix"></span>
+  <div class="entry-content">
+    <p>[$news.post_content filter=nl2br]</p>
+  </div>
+
+  <footer class="entry-meta">
+    <div class="fb-like fb-app" style="display:none;"  data-href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+    <div style="display:none;" class="fb-send pull-left" data-href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/" data-colorscheme="light"></div>
+  </footer>
+
+  <br />
+  <footer class="entry-meta">
+    Related Tags :
+    <span class="tag-links">
+	    [foreach from=$terms item=$aItem type=table]
+	        <a href="[$baseurl]tag/[$aItem.slug]/" rel="tag">
+	        [$aItem.name]
+	        </a>
+	    [/foreach from=$terms]
+    </span>
+  </footer>
+
+
+
+</article>
+
+<br />
+<div class="pull-left fb-app" style="display:none;" ><fb:comments-count href=[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/></fb:comments-count> comments</div>
+
+<div id="fb-root"></div>
+<div class="fb-comments fb-app" style="display:none;" data-href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/" data-width="600" data-numposts="10" data-colorscheme="light"></div>
+
+[content]
+</div>
+
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <Title Value="FastPlaz for Wordpress"/>
+      <UseAppBundle Value="False"/>
+      <ResourceType Value="res"/>
+      <Icon Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N Value="True" LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <StringTable CompanyName="fastplaz.com" FileDescription="Fast Web Loader for Wordpress with fastplaz" OriginalFilename="wordpress.bin" ProductName="FastPlaz for Wordpress" ProductVersion="0.0.0"/>
+    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="fastplaz_runtime"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="16">
+      <Unit0>
+        <Filename Value="wordpress.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="routes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="routes"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="main"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="src\app\wordpress\model\wordpress_featuredimage_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_featuredimage_model"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="src\app\wordpress\model\wordpress_news_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_news_model"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="src\app\wordpress\model\wordpress_nggallery_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_nggallery_model"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="src\app\wordpress\model\wordpress_options_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_options_model"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="src\app\wordpress\model\wordpress_pages_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_pages_model"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="src\app\wordpress\model\wordpress_tags_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_tags_model"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="src\app\wordpress\model\wordpress_terms_model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_terms_model"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="define.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\core\FastPlaz\src\library\html_lib.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="html_lib"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_category_controller"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="src\app\wordpress\wordpress_tags_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_tags_controller"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="src\app\wordpress\wordpress_pages_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_pages_controller"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wordpress_news_controller"/>
+      </Unit15>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="../../public_html/wordpress.bin" ApplyConventions="False"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\..\..\core\FastPlaz\src\library;src\app\wordpress\model;src\app\wordpress"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Other>
+      <CompilerMessages>
+        <MsgFileName Value=""/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
