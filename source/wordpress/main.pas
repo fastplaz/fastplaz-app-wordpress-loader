@@ -40,8 +40,6 @@ begin
 end;
 
 procedure TMainModule.RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse; var Handled: boolean);
-var
-  html: string;
 begin
   DataBaseInit;
   LanguageInit;
@@ -62,8 +60,11 @@ begin
   else
   begin
     Tags['$maincontent'] := @Tag_MainContent_Handler; //<<-- tag $maincontent handler
-    Response.Content := ThemeUtil.Render(nil, 'master'); // try with 'home'
+
+    ThemeUtil.Layout:= 'home';
+    Response.Content := ThemeUtil.Render; // try with 'home'
   end;
+
 
   Handled := True;
 end;

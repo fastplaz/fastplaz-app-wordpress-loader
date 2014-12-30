@@ -38,6 +38,7 @@ var
   where: string;
 begin
   Result := False;
+  where := '';
   for i := Low(Taxonomy) to High(Taxonomy) do
   begin
     if where = '' then
