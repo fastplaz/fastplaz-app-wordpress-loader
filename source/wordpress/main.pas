@@ -61,7 +61,7 @@ begin
   begin
     Tags['$maincontent'] := @Tag_MainContent_Handler; //<<-- tag $maincontent handler
 
-    ThemeUtil.Layout:= 'home';
+    ThemeUtil.Layout := 'home';
     Response.Content := ThemeUtil.Render; // try with 'home'
   end;
 
