@@ -90,7 +90,7 @@ function TWordpressNews.SearchNews(const Keyword: string): boolean;
 begin
   AddInnerJoin( 'term_relationships', 'object_id', 'posts.ID', []);
   GroupBy( AppData.tablePrefix + 'posts.ID');
-  Find([
+  Result := Find([
     '((' +
     AppData.tablePrefix + 'posts.post_title LIKE ''%' + Keyword + '%'')OR (' +
     AppData.tablePrefix + 'posts.post_content LIKE ''%' + Keyword + '%''))',

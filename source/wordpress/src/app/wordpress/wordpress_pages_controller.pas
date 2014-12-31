@@ -111,6 +111,7 @@ begin
   page_name := str[str.Count - 1];
 
   // post info
+  post_filter := '';
   for i := 1 to str.Count do
     post_filter := post_filter + '''' + str[i - 1] + ''',';
   post_filter := Copy(post_filter, 1, Length(post_filter) - 1);

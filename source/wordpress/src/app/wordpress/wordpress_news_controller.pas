@@ -84,7 +84,8 @@ var
   url, title: string;
   s, div_id, div_class, item_class: string;
   category_id: integer;
-  category_title, category_permalink: string;
+  //category_title,
+  category_permalink: string;
   first_news: boolean;
 begin
   div_id := StringReplace(Parameter.Values['id'], '"', '', [rfReplaceAll]);
@@ -97,12 +98,12 @@ begin
     die('err: category_permalink');
     with TWordpressTerms.Create() do
     begin
-      AddJoin( 'term_taxonomy', 'term_id', '_terms.term_id', ['taxonomy']);
+      AddJoin( 'term_taxonomy', 'term_id', 'terms.term_id', ['taxonomy']);
       FindFirst(['taxonomy="category"', 'slug="' + category_permalink + '"'], 'name');
       if RecordCount > 0 then
       begin
         category_id := Value['term_id'];
-        category_title := Value['name'];
+        //category_title := Value['name'];
       end;
       Free;
     end;

@@ -16,8 +16,8 @@ type
   private
     FBaseURL: string;
     FPath: string;
-    procedure ngTagController(Sender: TObject; const TagString: string;
-      TagParams: TStringList; Out ReplaceText: string);
+    procedure ngTagController(Sender: TObject; const TagString: string; TagParams: TStringList;
+      Out ReplaceText: string);
   public
     constructor Create(const DefaultTableName: string = '');
     destructor Destroy; override;
@@ -35,8 +35,8 @@ uses common, fastplaz_handler, logutil_lib, theme_controller;
 
 { TWPNGGallery }
 
-procedure TWPNGGallery.ngTagController(Sender: TObject; const TagString: string;
-  TagParams: TStringList; out ReplaceText: string);
+procedure TWPNGGallery.ngTagController(Sender: TObject; const TagString: string; TagParams: TStringList;
+  out ReplaceText: string);
 var
   tags: TStrings;
   id, src: string;
@@ -52,21 +52,19 @@ begin
     'singlepic':
     begin
       id := tags.Values['id'];
-      AddJoin( 'ngg_gallery', 'gid', 'galleryid', ['path']);
+      AddJoin('ngg_gallery', 'gid', 'galleryid', ['path']);
       FindFirst([AppData.tablePrefix + '_ngg_pictures.pid=' + id],
         '', 'filename,alttext');
       if Data.RecordCount > 0 then
       begin
-        src := BaseURL + FPath + '/' + Value['path'].AsString + '/' +
-          Value['filename'].AsString;
+        src := BaseURL + FPath + '/' + Value['path'].AsString + '/' + Value['filename'].AsString;
         ReplaceText := '<div><img src="' + src + '"';
         if tags.Values['w'] <> '' then
           ReplaceText := ReplaceText + ' width="' + tags.Values['w'];
         if tags.Values['h'] <> '' then
           ReplaceText := ReplaceText + ' height="' + tags.Values['h'];
         if tags.Values['float'] <> '' then
-          ReplaceText := ReplaceText + ' class="ngg-singlepic float_' +
-            tags.Values['float'] + '"';
+          ReplaceText := ReplaceText + ' class="ngg-singlepic float_' + tags.Values['float'] + '"';
         ReplaceText := ReplaceText + ' alt="' + Value['alttext'].AsString + '"';
         ReplaceText := ReplaceText + ' title="' + Value['alttext'].AsString + '"';
         ReplaceText := ReplaceText + '></div>';
@@ -78,7 +76,7 @@ end;
 
 constructor TWPNGGallery.Create(const DefaultTableName: string);
 begin
-  inherited Create( 'ngg_pictures');
+  inherited Create('ngg_pictures');
   Path := Config.GetValue('wordpress/path', '');
   BaseURL := Config.GetValue('wordpress/base_url', '');
   if BaseURL = '' then
