@@ -10,9 +10,9 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="wordpress"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="5"/>
-        <CursorPos X="1" Y="9"/>
-        <UsageCount Value="116"/>
+        <TopLine Value="23"/>
+        <CursorPos X="1" Y="41"/>
+        <UsageCount Value="120"/>
       </Unit0>
       <Unit1>
         <Filename Value="routes.pas"/>
@@ -21,17 +21,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="16"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit1>
       <Unit2>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="main"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="52"/>
-        <CursorPos X="32" Y="64"/>
-        <UsageCount Value="116"/>
+        <TopLine Value="42"/>
+        <CursorPos X="1" Y="53"/>
+        <UsageCount Value="120"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -41,7 +42,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="44"/>
         <CursorPos X="1" Y="52"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit3>
       <Unit4>
         <Filename Value="src\app\wordpress\model\wordpress_news_model.pas"/>
@@ -50,7 +51,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="88"/>
         <CursorPos X="13" Y="93"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit4>
       <Unit5>
         <Filename Value="src\app\wordpress\model\wordpress_nggallery_model.pas"/>
@@ -59,7 +60,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="71"/>
         <CursorPos X="36" Y="79"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit5>
       <Unit6>
         <Filename Value="src\app\wordpress\model\wordpress_options_model.pas"/>
@@ -68,7 +69,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="21" Y="30"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit6>
       <Unit7>
         <Filename Value="src\app\wordpress\model\wordpress_pages_model.pas"/>
@@ -77,7 +78,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="12"/>
         <CursorPos X="1" Y="31"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit7>
       <Unit8>
         <Filename Value="src\app\wordpress\model\wordpress_tags_model.pas"/>
@@ -86,7 +87,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="20" Y="27"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit8>
       <Unit9>
         <Filename Value="src\app\wordpress\model\wordpress_terms_model.pas"/>
@@ -95,7 +96,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="33"/>
         <CursorPos X="15" Y="41"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit9>
       <Unit10>
         <Filename Value="define.inc"/>
@@ -103,18 +104,16 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\..\core\FastPlaz\src\library\html_lib.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="html_lib"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="7"/>
         <CursorPos X="1" Y="16"/>
-        <UsageCount Value="116"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="120"/>
       </Unit11>
       <Unit12>
         <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
@@ -123,7 +122,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="94"/>
         <CursorPos X="80" Y="112"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit12>
       <Unit13>
         <Filename Value="src\app\wordpress\wordpress_tags_controller.pas"/>
@@ -132,7 +131,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="48"/>
         <CursorPos X="39" Y="62"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit13>
       <Unit14>
         <Filename Value="src\app\wordpress\wordpress_pages_controller.pas"/>
@@ -141,18 +140,16 @@
         <WindowIndex Value="0"/>
         <TopLine Value="105"/>
         <CursorPos X="21" Y="114"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
       </Unit14>
       <Unit15>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wordpress_news_controller"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="44" Y="8"/>
-        <UsageCount Value="116"/>
-        <Loaded Value="True"/>
+        <TopLine Value="8"/>
+        <CursorPos X="21" Y="16"/>
+        <UsageCount Value="120"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\..\core\docs\README-new project.txt"/>
@@ -174,9 +171,9 @@
         <Filename Value="..\..\..\core\FastPlaz\src\library\common.pas"/>
         <UnitName Value="common"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="293"/>
-        <CursorPos X="27" Y="305"/>
-        <UsageCount Value="24"/>
+        <TopLine Value="25"/>
+        <CursorPos X="53" Y="35"/>
+        <UsageCount Value="26"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\..\FastPlaz-wordpress-test\FastPlaz-wordpress\main.pas"/>
@@ -198,20 +195,17 @@
         <Filename Value="..\..\..\core\FastPlaz\src\systems\fastplaz_handler.pas"/>
         <UnitName Value="fastplaz_handler"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="88"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="12"/>
+        <TopLine Value="284"/>
+        <CursorPos X="20" Y="291"/>
+        <UsageCount Value="14"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
         <UnitName Value="theme_controller"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="419"/>
         <CursorPos X="85" Y="438"/>
         <UsageCount Value="32"/>
-        <Loaded Value="True"/>
       </Unit22>
       <Unit23>
         <Filename Value="C:\lazarus-1.2.6\fpc\2.6.4\source\packages\fcl-web\src\base\fphttp.pp"/>
@@ -225,9 +219,9 @@
         <Filename Value="..\..\..\core\FastPlaz\src\systems\session_controller.pas"/>
         <UnitName Value="session_controller"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="145"/>
-        <CursorPos X="1" Y="149"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="319"/>
+        <CursorPos X="24" Y="313"/>
+        <UsageCount Value="13"/>
       </Unit24>
       <Unit25>
         <Filename Value="C:\lazarus-1.2.6\fpc\2.6.4\source\rtl\inc\wstringh.inc"/>
@@ -327,9 +321,9 @@
         <Filename Value="C:\lazarus-1.2.6\fpc\2.6.4\source\packages\fcl-json\src\jsonconf.pp"/>
         <UnitName Value="jsonConf"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="75"/>
-        <CursorPos X="14" Y="86"/>
-        <UsageCount Value="8"/>
+        <TopLine Value="280"/>
+        <CursorPos X="17" Y="288"/>
+        <UsageCount Value="10"/>
       </Unit37>
       <Unit38>
         <Filename Value="C:\lazarus-1.2.6\fpc\2.6.4\source\rtl\objpas\sysutils\osutilsh.inc"/>
@@ -389,149 +383,37 @@
         <Filename Value="..\..\..\core\FastPlaz\define.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="22" Y="5"/>
+        <UsageCount Value="10"/>
       </Unit45>
       <Unit46>
         <Filename Value="..\..\..\core\FastPlaz\src\library\mailer_lib.pas"/>
         <UnitName Value="mailer_lib"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="17" Y="4"/>
-        <UsageCount Value="9"/>
+        <TopLine Value="16"/>
+        <CursorPos X="21" Y="11"/>
+        <UsageCount Value="10"/>
       </Unit46>
       <Unit47>
         <Filename Value="C:\lazarus-1.2.6\fpc\2.6.4\source\rtl\objpas\sysutils\sysstrh.inc"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="18"/>
-        <CursorPos X="54" Y="27"/>
-        <UsageCount Value="8"/>
+        <TopLine Value="109"/>
+        <CursorPos X="10" Y="119"/>
+        <UsageCount Value="10"/>
       </Unit47>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="47" Column="23" TopLine="33"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="52" Column="10" TopLine="36"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="52" Column="18" TopLine="33"/>
       </Position2>
-      <Position3>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="54" Column="8" TopLine="38"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="84" Column="22" TopLine="68"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="175" Column="77" TopLine="156"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="438" Column="69" TopLine="423"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="426" Column="20" TopLine="420"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="428" Column="60" TopLine="420"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="429" Column="62" TopLine="420"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="430" Column="68" TopLine="420"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="431" Column="72" TopLine="420"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="432" Column="27" TopLine="420"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="436" Column="25" TopLine="420"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="437" Column="28" TopLine="421"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="438" Column="30" TopLine="422"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="439" Column="42" TopLine="423"/>
-      </Position16>
-      <Position17>
-        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="355" Column="1" TopLine="238"/>
-      </Position17>
-      <Position18>
-        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
-        <Caret Line="9" Column="14" TopLine="1"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="423" Column="45" TopLine="406"/>
-      </Position19>
-      <Position20>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="433" Column="5" TopLine="424"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="436" Column="8" TopLine="426"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="442" Column="24" TopLine="434"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="445" Column="1" TopLine="433"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="438" Column="6" TopLine="423"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="411" Column="23" TopLine="407"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="429" Column="1" TopLine="413"/>
-      </Position26>
-      <Position27>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="438" Column="1" TopLine="422"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="426" Column="4" TopLine="422"/>
-      </Position28>
-      <Position29>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="455" Column="54" TopLine="441"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\..\..\core\FastPlaz\src\systems\theme_controller.pas"/>
-        <Caret Line="425" Column="12" TopLine="416"/>
-      </Position30>
     </JumpHistory>
   </ProjectSession>
   <EditorMacros Count="0"/>
