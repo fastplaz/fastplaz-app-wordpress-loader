@@ -131,7 +131,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\..\..\core\FastPlaz\src\library;src\app\wordpress\model;src\app\wordpress"/>
+      <OtherUnitFiles Value="..\..\..\core\FastPlaz\src\library;src\app\wordpress\model;src\app\wordpress;..\..\..\core\FastPlaz\src\systems"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>

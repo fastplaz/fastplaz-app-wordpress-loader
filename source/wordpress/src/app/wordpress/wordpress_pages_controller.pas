@@ -49,6 +49,9 @@ begin
   DataBaseInit;
   LanguageInit;
 
+  Pages := TWordpressPages.Create();
+  Posts := TWordpressPages.Create();
+
   Tags['$maincontent'] := @Tag_MainContent_Handler;
   Response.Content := ThemeUtil.Render(@TagController, '', True);
 
@@ -80,8 +83,6 @@ begin
   CreateSession := True;
   OnRequest := @RequestHandler;
   OnBlockController := @DoBlockController;
-  Pages := TWordpressPages.Create();
-  Posts := TWordpressPages.Create();
 end;
 
 destructor TWPPagesWebModule.Destroy;
