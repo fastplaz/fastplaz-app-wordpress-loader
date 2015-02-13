@@ -21,7 +21,7 @@ type
     News: TWordpressNews;
     Terms: TWordpressTerms;
     Featuredimage: TFeaturedimage;
-    function GetLastNews(FunctionName: string = ''; Parameter: TStrings = nil): string;
+      function GetLastNews(FunctionName: string = ''; Parameter: TStrings = nil; LimitNews:integer=10): string;
     function GetRandomNews(FunctionName: string = ''; Parameter: TStrings = nil): string;
     function GeneratePagesMenu(ParentMenu: integer; Parameter: TStrings = nil;
       ParentBaseURL: string = ''; IsParent: boolean = True): string;
@@ -56,6 +56,10 @@ begin
   DataBaseInit;
   LanguageInit;
 
+  News := TWordpressNews.Create();
+  Terms := TWordpressTerms.Create();
+  Featuredimage := TFeaturedimage.Create();
+
   Tags['$maincontent'] := @Tag_MainContent_Handler;
   Response.Content := ThemeUtil.Render(nil, '', True);
 
@@ -76,11 +80,10 @@ begin
   Handled := True;
 end;
 
-function TWPNewsWebModule.GetLastNews(FunctionName: string; Parameter: TStrings): string;
+function TWPNewsWebModule.GetLastNews(FunctionName: string; Parameter: TStrings; LimitNews: integer): string;
 var
   lst: TStringList;
   _News: TWordpressNews;
-  limit: integer;
   url, title: string;
   s, div_id, div_class, item_class: string;
   category_id: integer;
@@ -98,7 +101,7 @@ begin
     die('err: category_permalink');
     with TWordpressTerms.Create() do
     begin
-      AddJoin( 'term_taxonomy', 'term_id', 'terms.term_id', ['taxonomy']);
+      AddJoin('term_taxonomy', 'term_id', 'terms.term_id', ['taxonomy']);
       FindFirst(['taxonomy="category"', 'slug="' + category_permalink + '"'], 'name');
       if RecordCount > 0 then
       begin
@@ -109,29 +112,24 @@ begin
     end;
   end;
 
-  limit := 0;
-  if Parameter <> nil then
-    limit := s2i(Parameter.Values['number']);
-  if limit = 0 then
-    limit := 20;
   _News := TWordpressNews.Create();
   if category_id = 0 then
-    _News.Find(['post_type="post"', 'post_status="publish"'], 'post_date desc', limit)
+    _News.Find(['post_type="post"', 'post_status="publish"'], 'post_date desc', LimitNews)
   else
   begin
-    _News.AddJoin( 'term_relationships', 'object_id', 'posts.ID', ['object_id']);
+    _News.AddJoin('term_relationships', 'object_id', AppData.tablePrefix + 'posts.ID', ['object_id']);
     _News.Find(['post_type="post"', 'post_status="publish"', AppData.tablePrefix +
-      '_term_relationships.term_taxonomy_id=' + i2s(category_id)],
-      'post_date desc', limit);
+      'term_relationships.term_taxonomy_id=' + i2s(category_id)],
+      'post_date desc', LimitNews);
   end;
 
   if _News.RecordCount > 0 then
   begin
     lst := TStringList.Create;
-    lst.Add( '<header class="entry-header">');
-    lst.Add( '<h1 class="archive-title">Last News:</h1>');
-    lst.Add( '</header>');
-    lst.Add( '<article id="post-34" class="post-34 post type-post status-publish format-standard hentry category-general tag-hello"><div class="entry-content ">');
+    lst.Add('<header class="entry-header">');
+    lst.Add('<h1 class="archive-title">Last News:</h1>');
+    lst.Add('</header>');
+    lst.Add('<article id="post-34" class="post-34 post type-post status-publish format-standard hentry category-general tag-hello"><div class="entry-content ">');
     if Parameter <> nil then
       if Parameter.Values['title'] <> '' then
       begin
@@ -161,6 +159,12 @@ begin
             s := '<p>' + MoreLess(s) + '</p>';
             lst.Add(s);
           end;
+          'full':
+          begin
+            s := _News['post_content'];
+            s := StripTagsCustom(s, '[', ']');
+            lst.Add( s);
+          end;
         end;
       end;//-- if Parameter.Values['options'] <> ''
       lst.Add('</li>');
@@ -177,7 +181,7 @@ begin
     if Parameter.Values['title'] <> '' then
       lst.Add('</div>');
 
-    lst.Add( '</div></article>');
+    lst.Add('</div></article>');
     Result := lst.Text;
     FreeAndNil(lst);
   end;
@@ -322,9 +326,6 @@ begin
   CreateSession := True;
   OnRequest := @RequestHandler;
   OnBlockController := @DoBlockController;
-  News := TWordpressNews.Create();
-  Terms := TWordpressTerms.Create();
-  Featuredimage := TFeaturedimage.Create();
 end;
 
 destructor TWPNewsWebModule.Destroy;
@@ -338,20 +339,22 @@ end;
 function TWPNewsWebModule.View: string;
 var
   thumbnail_url, title: string;
-  lst : TStringList;
+  lst: TStringList;
 begin
   if Application.Request.QueryString = '' then
   begin
     lst := TStringList.Create;
+    lst.Values['options'] := 'full';
     Result := GetLastNews('', lst);
-    FreeAndNil( lst);
+    FreeAndNil(lst);
     Exit;
   end;
 
-  News.AddJoin( 'users', 'ID', 'posts.post_author', ['display_name']);
+  News.AddJoin('users', 'ID', 'posts.post_author', ['display_name']);
   News.Find(['date_format( post_date, "%Y%m") = "' + _GET['year'] + _GET['month'] + '"',
     'post_status="publish"', 'post_type="post"', 'post_name = "' + _GET['permalink'] + '"'],
     AppData.tablePrefix + 'posts.post_date DESC');
+
   if News.RecordCount = 0 then
   begin
     Result := H2(__(__Content_Not_Found));
@@ -375,12 +378,17 @@ begin
 
   // facebook content sharing
   title := News['post_title'];
+  ThemeUtil.AddMeta('description', title, 'property');
   ThemeUtil.AddMeta('og:type', 'article', 'property');
   ThemeUtil.AddMeta('og:title', title, 'property');
   ThemeUtil.AddMeta('og:site_name', GetOptions('blogname'), 'property');
   ThemeUtil.AddMeta('og:description', GetOptions('blogdescription') + ', ' + title, 'property');
   ThemeUtil.AddMeta('og:image', thumbnail_url, 'property');
   // facebook content sharing - end
+
+  ThemeUtil.Assign('date01', '2014/12/30');
+  ThemeUtil.Assign('date02', '2015/01/12');
+  //<br />[date01 filter=nl2br]
 
   Result := ThemeUtil.RenderFromContent(@TagController, '', 'modules/wpnews/detail.html');
   News.AddHit(News['ID']);
@@ -406,6 +414,9 @@ end;
 
 procedure TWPNewsWebModule.DoBlockController(Sender: TObject; FunctionName: string;
   Parameter: TStrings; var ResponseString: string);
+var
+  str: TStrings;
+  pageName : string;
 begin
   case FunctionName of
     'getoption':
@@ -432,7 +443,28 @@ begin
         end;
         if NewsTitle <> '' then
           ResponseString := ' - ' + NewsTitle;
-      end;
+      end
+      else
+      begin // is pages ?
+        str := Explode(Application.Request.PathInfo, '/');
+        if (str.Count>=2) then
+        begin
+          if str[1] = 'pages' then
+          begin
+            pageName := str[str.Count - 1];
+            with TWordpressNews.Create() do
+            begin
+              FindFirst(['post_status="publish"', 'post_type="page"', 'post_name="' + pageName + '"']);
+              if RecordCount > 0 then
+              begin
+                ResponseString := Value['post_title'];
+              end;
+              Free;
+            end;
+          end;
+        end;
+      end; // is pages - end
+
     end; //-- newstitle
     'lastnews':
     begin

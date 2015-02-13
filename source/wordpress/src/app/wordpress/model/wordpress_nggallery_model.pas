@@ -41,6 +41,7 @@ var
   tags: TStrings;
   id, src: string;
 begin
+  ReplaceText := TagString;
   tags := Explode(TagString, ' ');
   if tags.Count = 0 then
   begin
