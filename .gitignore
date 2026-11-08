@@ -73,3 +73,6 @@ public_html/ztemp/sessions/*.ses
 public_html/ztemp/error_log/*.log
 public_html/ztemp/cache/*
 !public_html/ztemp/cache/index.html
+
+# backup folders
+backup/

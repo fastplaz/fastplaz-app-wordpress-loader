@@ -8,22 +8,27 @@
       <Unit>
         <Filename Value="wordpress.lpr"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="15"/>
-        <CursorPos X="28" Y="38"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="23"/>
+        <CursorPos X="36" Y="32"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="routes.pas"/>
         <IsPartOfProject Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="23"/>
         <CursorPos Y="17"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="69"/>
-        <CursorPos X="15" Y="85"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="49"/>
+        <CursorPos X="3" Y="48"/>
         <UsageCount Value="137"/>
         <Loaded Value="True"/>
       </Unit>
@@ -42,9 +47,11 @@
       <Unit>
         <Filename Value="src\app\wordpress\model\wordpress_news_model.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="39"/>
-        <CursorPos X="36" Y="42"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="53"/>
+        <CursorPos X="26" Y="42"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src\app\wordpress\model\wordpress_nggallery_model.pas"/>
@@ -82,31 +89,36 @@
       <Unit>
         <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="94"/>
-        <CursorPos X="52" Y="111"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="27"/>
+        <CursorPos X="43" Y="52"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src\app\wordpress\wordpress_tags_controller.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="112"/>
-        <CursorPos Y="130"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="46"/>
+        <CursorPos X="43" Y="46"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src\app\wordpress\wordpress_pages_controller.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
-        <CursorPos Y="8"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="40"/>
+        <CursorPos X="3" Y="51"/>
         <UsageCount Value="137"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="52"/>
-        <CursorPos Y="59"/>
+        <TopLine Value="112"/>
+        <CursorPos X="28" Y="129"/>
         <UsageCount Value="137"/>
         <Loaded Value="True"/>
       </Unit>
@@ -390,8 +402,15 @@
         <CursorPos X="13" Y="31"/>
         <UsageCount Value="10"/>
       </Unit>
+      <Unit>
+        <Filename Value="..\..\..\fastplaz\FastPlaz\src\library\database_lib.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="167"/>
+        <CursorPos X="10" Y="181"/>
+        <UsageCount Value="10"/>
+      </Unit>
     </Units>
-    <JumpHistory HistoryIndex="20">
+    <JumpHistory HistoryIndex="24">
       <Position>
         <Filename Value="main.pas"/>
         <Caret Line="77" Column="27" TopLine="61"/>
@@ -472,6 +491,22 @@
       </Position>
       <Position>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="61" Column="13" TopLine="52"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="48" Column="43" TopLine="40"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
+        <Caret Line="111" Column="10" TopLine="22"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_category_controller.pas"/>
+        <Caret Line="156" TopLine="14"/>
       </Position>
     </JumpHistory>
     <RunParams>
