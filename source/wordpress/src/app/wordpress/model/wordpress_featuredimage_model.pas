@@ -48,11 +48,13 @@ begin
     if image_id <= 0 then
       Exit;
     wpnggallery := TWPNGGallery.Create();
-    wpnggallery.AddJoin('ngg_gallery', 'gid', 'galleryid', ['path']);
+    wpnggallery.AddJoin('ngg_gallery', 'gid', 'ngg_pictures.galleryid', ['path']);
     wpnggallery.FindFirst([AppData.tablePrefix + 'ngg_pictures.pid=' + i2s(image_id)],
       '', 'filename,alttext');
     if wpnggallery.Data.RecordCount > 0 then
-      Result := string(wpnggallery.Value['path']) + '/' + string(wpnggallery.Value['filename']);
+      // the gallery path may end with "/": no "//" in the url
+      Result := StringReplace(string(wpnggallery.Value['path']) + '/' +
+        string(wpnggallery.Value['filename']), '//', '/', [rfReplaceAll]);
 
     FreeAndNil(wpnggallery);
     Exit;

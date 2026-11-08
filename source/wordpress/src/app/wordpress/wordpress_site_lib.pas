@@ -65,6 +65,11 @@ begin
     System.Delete(upload_url, Length(upload_url), 1);
   if (upload_url <> '') and (Pos(UPLOADS, Result) = 1) then
     Result := upload_url + '/' + Copy(Result, Length(UPLOADS) + 1, MaxInt)
+  // other files under wp-content (NextGEN: wp-content/gallery/...) live on
+  // the same host, when upload_url is ".../wp-content/uploads"
+  else if (Pos('wp-content/', Result) = 1) and
+    SameText(Copy(upload_url, Length(upload_url) - Length(UPLOADS) + 2, MaxInt), Copy(UPLOADS, 1, Length(UPLOADS) - 1)) then
+    Result := Copy(upload_url, 1, Length(upload_url) - Length(UPLOADS) + 1) + Result
   else
     Result := string(Config.GetValue('wordpress/base_url', '')) +
       string(Config.GetValue('wordpress/path', '')) + '/' + Result;
