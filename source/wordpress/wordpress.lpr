@@ -26,6 +26,11 @@ uses
 {$R *.res}
 
 begin
+  // WordPress data is UTF-8. Without this, string fields are converted to the
+  // system ANSI code page (cp1252 on Windows): "–" becomes byte $96.
+  // Linux already defaults to UTF-8; this makes Windows behave the same.
+  DefaultSystemCodePage := CP_UTF8;
+
   Application.Title := string( Config.GetValue(_SYSTEM_SITENAME, 'FastPlaz for Wordpress'));
   Application.Email := string( Config.GetValue(_SYSTEM_WEBMASTER_EMAIL, 'webmaster@' + GetEnvironmentVariable('SERVER_NAME')));
   Application.DefaultModuleName := string( Config.GetValue(_SYSTEM_MODULE_DEFAULT, 'main'));

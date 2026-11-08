@@ -21,6 +21,10 @@ type
     Terms: TWordpressTerms;
     Featuredimage: TFeaturedimage;
     function GetLastNews(FunctionName: string = ''; Parameter: TStrings = nil; LimitNews:integer=10): string;
+    // home page / news list / search: cards (thumbnail, date, excerpt) + pagination
+    function GetNewsCards(const Keyword: string = ''): string;
+    function NewsImageURL(const NewsID: integer; const Content: string): string;
+    procedure PrepareModels;
     function GetRandomNews(FunctionName: string = ''; Parameter: TStrings = nil): string;
     function GeneratePagesMenu(ParentMenu: integer; Parameter: TStrings = nil;
       ParentBaseURL: string = ''; IsParent: boolean = True): string;
@@ -35,6 +39,8 @@ type
     procedure Get; override;
 
     function View: string;
+    // news search (?s=keyword), as cards
+    function Search(const Keyword: string): string;
     function GetOptions(const KeyName: string): string;
 
     // Handler / Controller
@@ -46,9 +52,154 @@ type
 
 implementation
 
-uses database_lib, common, language_lib, html_lib, theme_controller,
+uses database_lib, common, language_lib, html_lib, theme_controller, RegExpr,
   wordpress_options_model, wordpress_nggallery_model, wordpress_pages_model,
   wordpress_category_controller;
+
+const
+  NEWS_PER_PAGE = 9;        // cards per page; page 1 shows one extra (hero)
+  NEWS_MAX_PAGE = 10000;
+  NEWS_EXCERPT_LENGTH = 180;
+  NEWS_MONTHS: array[1..12] of string = ('Jan', 'Feb', 'Mar', 'Apr', 'Mei',
+    'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des');
+
+function FormatNewsDate(const ADate: TDateTime): string;
+var
+  y, m, d: word;
+begin
+  DecodeDate(ADate, y, m, d);
+  Result := IntToStr(d) + ' ' + NEWS_MONTHS[m] + ' ' + IntToStr(y);
+end;
+
+// src of the first <img> in the post content, '' when there is none
+function FirstImageURL(const Content: string): string;
+begin
+  Result := '';
+  with TRegExpr.Create do
+  try
+    Expression := '<img\s[^>]*?src\s*=\s*["'']([^"'']+)["'']';
+    ModifierI := True;
+    if Exec(Content) then
+      // the attribute is html: decode &amp; so the url is not encoded twice
+      Result := StringReplace(Match[1], '&amp;', '&', [rfReplaceAll]);
+  finally
+    Free;
+  end;
+end;
+
+// plain text excerpt, cut on a word boundary
+function PlainText(const Html: string): string;
+begin
+  // a space before every tag: "Amir<br>Sabdurrahman" must not become one word
+  Result := StringReplace(Html, '<', ' <', [rfReplaceAll]);
+  Result := StripTagsCustom(StripTags(Result), '[', ']');
+  Result := StringReplace(Result, #13, ' ', [rfReplaceAll]);
+  Result := StringReplace(Result, #10, ' ', [rfReplaceAll]);
+  Result := StringReplace(Result, #9, ' ', [rfReplaceAll]);
+  Result := StringReplace(Result, '&nbsp;', ' ', [rfReplaceAll, rfIgnoreCase]);
+  while Pos('  ', Result) > 0 do
+    Result := StringReplace(Result, '  ', ' ', [rfReplaceAll]);
+  Result := Trim(Result);
+end;
+
+// true when position P of S is inside an html entity such as &amp; / &#8211;
+function InsideEntity(const S: string; P: integer): boolean;
+var
+  q: integer;
+begin
+  q := P;
+  while (q > 1) and (P - q < 10) and (S[q - 1] in ['a'..'z', 'A'..'Z', '0'..'9', '#']) do
+    Dec(q);
+  Result := (q > 1) and (S[q - 1] = '&');
+end;
+
+// wrap every match of Keyword (case-insensitive) in <mark>
+function HighlightKeyword(const Text, Keyword: string): string;
+var
+  lt, lk: string;
+  p, from: integer;
+begin
+  lk := LowerCase(Keyword);
+  if Length(lk) < 2 then
+    Exit(Text);
+  lt := LowerCase(Text);   // ascii only: byte positions stay the same
+  Result := '';
+  from := 1;
+  repeat
+    p := Pos(lk, lt, from);
+    if p = 0 then
+      Break;
+    if InsideEntity(lt, p) then
+    begin
+      Result := Result + Copy(Text, from, p - from + 1);
+      from := p + 1;
+      Continue;
+    end;
+    Result := Result + Copy(Text, from, p - from) + '<mark>' + Copy(Text, p, Length(lk)) + '</mark>';
+    from := p + Length(lk);
+  until False;
+  Result := Result + Copy(Text, from, MaxInt);
+end;
+
+// cut S to about Len characters on a word boundary, without leaving a
+// half cut html entity (&amp / &nbsp ...) at the end
+function CutText(const S: string; Len: integer; out Cut: boolean): string;
+var
+  p: integer;
+begin
+  Result := MoreLess(S, Len, '');
+  Cut := Length(Result) < Length(Trim(S));
+  if Cut then
+  begin
+    p := LastDelimiter('&;', Result);
+    if (p > 0) and (Result[p] = '&') then
+      Result := TrimRight(Copy(Result, 1, p - 1));
+  end;
+end;
+
+// plain text excerpt. With a keyword: the part of the content around the
+// first match, with the matches highlighted.
+function NewsExcerpt(const Excerpt, Content: string; const Keyword: string = ''): string;
+var
+  s: string;
+  p, start: integer;
+  cut: boolean;
+begin
+  if Keyword <> '' then
+  begin
+    s := PlainText(Content);
+    p := Pos(LowerCase(Keyword), LowerCase(s));
+    if p > 0 then
+    begin
+      start := p - 60;
+      if start <= 1 then
+        start := 1
+      else
+      begin
+        // start on a word
+        while (start < p) and (s[start] <> ' ') do
+          Inc(start);
+        Inc(start);
+      end;
+      Result := CutText(Copy(s, start, MaxInt), NEWS_EXCERPT_LENGTH, cut);
+      Result := HighlightKeyword(Result, Keyword);
+      if start > 1 then
+        Result := '&hellip; ' + Result;
+      if cut then
+        Result := Result + ' &hellip;';
+      Exit;
+    end;
+  end;
+
+  s := Excerpt;
+  if Trim(StripTags(s)) = '' then
+    s := Content;
+  Result := CutText(PlainText(s), NEWS_EXCERPT_LENGTH, cut);
+  if Keyword <> '' then
+    Result := HighlightKeyword(Result, Keyword);
+  if cut then
+    Result := Result + ' &hellip;';
+end;
 
 function IsDigits(const AValue: string): boolean;
 var
@@ -68,6 +219,7 @@ procedure TWPNewsWebModule.Get;
 begin
   DataBaseInit;
   LanguageInit;
+  QueryExec('SET CHARACTER SET utf8mb4;');
 
   Tags['$maincontent'] := @Tag_MainContent_Handler;
   Response.Content := ThemeUtil.Render(nil, '', True);
@@ -209,6 +361,213 @@ begin
       end;
     end;
   finally
+    FreeAndNil(_News);
+  end;
+end;
+
+function TWPNewsWebModule.NewsImageURL(const NewsID: integer; const Content: string): string;
+const
+  UPLOADS = 'wp-content/uploads/';
+var
+  upload_url: string;
+begin
+  // 1. featured image, 2. first image in the content
+  Result := Featuredimage.GetFeaturedImageURLByID(NewsID);
+  if Result = '' then
+    Exit(FirstImageURL(Content));
+  if Pos('://', Result) > 0 then
+    Exit;
+
+  // optional "wordpress/upload_url": the public url of wp-content/uploads,
+  // for sites whose media live on another host (cdn / content domain)
+  upload_url := Trim(string(Config.GetValue('wordpress/upload_url', '')));
+  while (upload_url <> '') and (upload_url[Length(upload_url)] = '/') do
+    System.Delete(upload_url, Length(upload_url), 1);
+  if (upload_url <> '') and (Pos(UPLOADS, Result) = 1) then
+    Result := upload_url + '/' + Copy(Result, Length(UPLOADS) + 1, MaxInt)
+  else
+    Result := string(Config.GetValue('wordpress/base_url', '')) +
+      string(Config.GetValue('wordpress/path', '')) + '/' + Result;
+end;
+
+function TWPNewsWebModule.Search(const Keyword: string): string;
+begin
+  PrepareModels;
+  Result := GetNewsCards(Keyword);
+end;
+
+function TWPNewsWebModule.GetNewsCards(const Keyword: string): string;
+var
+  lst: TStringList;
+  _News: TWordpressNews;
+  page, limit, offset, n, total, total_page: integer;
+  post_date: TDateTime;
+  keyword_html, page_url, pattern, order: string;
+  url, title, image, card_class, thumb: string;
+  has_next, is_search: boolean;
+  where: array of string;
+begin
+  Result := '';
+  is_search := Keyword <> '';
+  keyword_html := HTMLEncode(Keyword);
+  total := 0;
+  total_page := 0;
+
+  page := s2i(_GET['page']);
+  if page < 1 then
+    page := 1;
+  if page > NEWS_MAX_PAGE then
+    page := NEWS_MAX_PAGE;
+  if is_search then
+  begin
+    // search: plain grid, no hero
+    limit := NEWS_PER_PAGE;
+    offset := (page - 1) * NEWS_PER_PAGE;
+  end
+  else if page = 1 then
+  begin
+    limit := NEWS_PER_PAGE + 1;
+    offset := 0;
+  end
+  else
+  begin
+    limit := NEWS_PER_PAGE;
+    offset := (NEWS_PER_PAGE + 1) + (page - 2) * NEWS_PER_PAGE;
+  end;
+
+  _News := TWordpressNews.Create();
+  lst := TStringList.Create;
+  try
+    SetLength(where, 2);
+    where[0] := 'post_type="post"';
+    where[1] := 'post_status="publish"';
+    order := 'post_date desc';
+    if is_search then
+    begin
+      // the keyword comes from the request: escape the LIKE wildcards, then
+      // quote the whole pattern (QuoteValue also escapes the backslashes)
+      pattern := StringReplace(Keyword, '\', '\\', [rfReplaceAll]);
+      pattern := StringReplace(pattern, '%', '\%', [rfReplaceAll]);
+      pattern := StringReplace(pattern, '_', '\_', [rfReplaceAll]);
+      pattern := _News.QuoteValue('%' + pattern + '%');
+      SetLength(where, 3);
+      where[2] := '(post_title LIKE ' + pattern + ' OR post_content LIKE ' + pattern + ')';
+      // matches in the title first, then the newest
+      order := '(post_title LIKE ' + pattern + ') desc, post_date desc';
+
+      _News.Find(where, '', 0, 'COUNT(*) AS total');
+      if _News.RecordCount > 0 then
+        total := integer(_News['total']);
+      total_page := (total + NEWS_PER_PAGE - 1) div NEWS_PER_PAGE;
+    end;
+
+    // one extra row tells whether there is a next page
+    _News.Find(where, order, limit + 1,
+      'ID,post_title,post_name,post_date,post_excerpt,post_content', offset);
+    has_next := _News.RecordCount > limit;
+
+    lst.Add('<section class="news-feed">');
+    lst.Add('<header class="feed-header">');
+    if is_search then
+    begin
+      lst.Add('<h1 class="feed-title">Hasil pencarian: <q>' + keyword_html + '</q></h1>');
+      if total > 0 then
+        lst.Add('<p class="feed-meta">' + IntToStr(total) + ' berita ditemukan</p>');
+      lst.Add('<form role="search" method="get" class="feed-search" action="/">' +
+        '<label class="screen-reader-text" for="feed-search-field">Cari berita:</label>' +
+        '<input type="search" id="feed-search-field" name="s" value="' + keyword_html +
+        '" placeholder="Cari berita&hellip;">' +
+        '<button type="submit">Cari</button></form>');
+    end
+    else if page = 1 then
+      lst.Add('<h1 class="feed-title">Berita Terbaru</h1>')
+    else
+      lst.Add('<h1 class="feed-title">Berita Terbaru <span class="feed-page">Halaman ' +
+        IntToStr(page) + '</span></h1>');
+    lst.Add('</header>');
+
+    if _News.RecordCount = 0 then
+    begin
+      if is_search and (page = 1) then
+        lst.Add('<p class="feed-empty">Tidak ada berita yang cocok dengan <q>' + keyword_html +
+          '</q>. Coba kata kunci lain.</p>')
+      else if is_search then
+        lst.Add('<p class="feed-empty">Halaman ini kosong. <a href="?s=' + UrlEncode(Keyword) +
+          '">Kembali ke halaman pertama</a>.</p>')
+      else
+        lst.Add('<p class="feed-empty">Belum ada berita.</p>');
+    end
+    else
+    begin
+      lst.Add('<div class="news-grid">');
+      n := 0;
+      while (not _News.Data.EOF) and (n < limit) do
+      begin
+        post_date := TDateTime(_News['post_date']);
+        url := '/' + FormatDateTime('YYYY', post_date) + '/' +
+          FormatDateTime('mm', post_date) + '/' + string(_News['post_name']) + '/';
+        title := string(_News['post_title']);
+        image := NewsImageURL(integer(_News['ID']), string(_News['post_content']));
+
+        card_class := 'news-card';
+        if (not is_search) and (page = 1) and (n = 0) then
+          card_class := card_class + ' news-card--hero';
+
+        if image <> '' then
+        begin
+          thumb := '<img src="' + HTMLEncode(image) + '" alt=""';
+          if (n > 0) or is_search then
+            thumb := thumb + ' loading="lazy"';
+          thumb := thumb + ' decoding="async">';
+        end
+        else
+          thumb := '<span class="news-card-noimg"></span>';
+
+        lst.Add('<article class="' + card_class + '">');
+        lst.Add('<a class="news-card-thumb" href="' + url + '" tabindex="-1" aria-hidden="true">' +
+          thumb + '</a>');
+        lst.Add('<div class="news-card-body">');
+        lst.Add('<time class="news-card-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) +
+          '">' + FormatNewsDate(post_date) + '</time>');
+        lst.Add('<h2 class="news-card-title"><a href="' + url + '">' + title + '</a></h2>');
+        lst.Add('<p class="news-card-excerpt">' +
+          NewsExcerpt(string(_News['post_excerpt']), string(_News['post_content']), Keyword) + '</p>');
+        lst.Add('<a class="news-card-more" href="' + url + '">Baca selengkapnya</a>');
+        lst.Add('</div>');
+        lst.Add('</article>');
+
+        Inc(n);
+        _News.Data.Next;
+      end;
+      lst.Add('</div>');
+    end;
+
+    // no pagination on a page past the last one (it shows a link back instead)
+    if ((page > 1) or has_next) and (_News.RecordCount > 0) then
+    begin
+      if is_search then
+        page_url := '?s=' + UrlEncode(Keyword) + '&amp;page='
+      else
+        page_url := '?page=';
+      lst.Add('<nav class="pagination" aria-label="Navigasi halaman">');
+      if page > 1 then
+        lst.Add('<a class="pagination-prev" href="' + page_url + IntToStr(page - 1) +
+          '" rel="prev">&larr; Sebelumnya</a>');
+      if total_page > 0 then
+        lst.Add('<span class="pagination-current">Halaman ' + IntToStr(page) + ' dari ' +
+          IntToStr(total_page) + '</span>')
+      else
+        lst.Add('<span class="pagination-current">Halaman ' + IntToStr(page) + '</span>');
+      if has_next then
+        lst.Add('<a class="pagination-next" href="' + page_url + IntToStr(page + 1) +
+          '" rel="next">Berikutnya &rarr;</a>');
+      lst.Add('</nav>');
+    end;
+    lst.Add('</section>');
+
+    Result := lst.Text;
+  finally
+    FreeAndNil(lst);
     FreeAndNil(_News);
   end;
 end;
@@ -361,11 +720,20 @@ begin
   inherited CreateNew(AOwner, CreateMode);
   CreateSession := True;
   OnBlockController := @DoBlockController;
-  // created here, not per request: View is also called by TMainModule,
-  // which never runs Get on this module
-  News := TWordpressNews.Create();
-  Terms := TWordpressTerms.Create();
-  Featuredimage := TFeaturedimage.Create();
+  // the models are created by PrepareModels, not here: a model takes the
+  // table prefix when it is created, and the prefix is only known after
+  // DataBaseInit (Get runs it after this constructor)
+end;
+
+procedure TWPNewsWebModule.PrepareModels;
+begin
+  // View is also called by TMainModule, which never runs Get on this module
+  if News = nil then
+    News := TWordpressNews.Create();
+  if Terms = nil then
+    Terms := TWordpressTerms.Create();
+  if Featuredimage = nil then
+    Featuredimage := TFeaturedimage.Create();
 end;
 
 destructor TWPNewsWebModule.Destroy;
@@ -379,20 +747,15 @@ end;
 function TWPNewsWebModule.View: string;
 var
   thumbnail_url, title, year_month: string;
-  lst: TStringList;
 begin
+  PrepareModels;
+
   // no permalink (home page, /news/, /2014/04/): latest news.
   // The route variables come from the rewrite rule (CGI) or from the route
   // pattern (standalone), so do not look at the raw query string here.
   if _GET['permalink'] = '' then
   begin
-    lst := TStringList.Create;
-    try
-      lst.Values['options'] := 'full';
-      Result := GetLastNews('', lst);
-    finally
-      FreeAndNil(lst);
-    end;
+    Result := GetNewsCards;
     Exit;
   end;
 

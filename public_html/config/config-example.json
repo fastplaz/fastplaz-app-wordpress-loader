@@ -46,6 +46,7 @@
   "wordpress" : {
     "path" : "\/id",
     "base_url" : "http:\/\/www.fastplaz.com",
+    "upload_url" : "",
     "plugins" : {
       "polylang" : true
     }
