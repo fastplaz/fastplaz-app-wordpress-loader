@@ -29,13 +29,12 @@
     "default" : {
       "hostname" : "localhost",
       "port" : "",
-      "driver" : "MySQL 5.0",
-      "tabletype" : "myisam",
+      "driver" : "MySQL 8.0",
       "username" : "root",
       "password" : "root",
-      "database_name" : "amana",
+      "database_name" : "your_database_name",
       "prefix" : "wp_",
-      "library" : "..\/libs\/win\/libmysql.dll"
+      "library_if_any" : "..\/libs\/win\/libmysql.dll"
     }
   },
   "log" : {
