@@ -42,7 +42,6 @@ procedure TMainModule.Get;
 begin
   DataBaseInit;
   LanguageInit;
-  QueryExec('SET CHARACTER SET utf8mb4;');
 
   // facebook content sharing
   ThemeUtil.AddMeta('og:type', 'article', 'property');

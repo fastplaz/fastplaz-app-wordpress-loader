@@ -48,7 +48,6 @@ procedure TWPPagesWebModule.Get;
 begin
   DataBaseInit;
   LanguageInit;
-  QueryExec('SET CHARACTER SET utf8mb4;');
 
   Tags['$maincontent'] := @Tag_MainContent_Handler;
   Response.Content := ThemeUtil.Render(@TagController, '', True);
