@@ -66,3 +66,9 @@ libs
 # fastplaz - wordpress
 source/wordpress/lib/*
 source/wordpress/lib/backup/*
+
+# runtime files (sessions are written here when TEMP is not set, e.g. WSL/Linux)
+public_html/ztemp/sessions/*.ses
+public_html/ztemp/error_log/*.log
+public_html/ztemp/cache/*
+!public_html/ztemp/cache/index.html
