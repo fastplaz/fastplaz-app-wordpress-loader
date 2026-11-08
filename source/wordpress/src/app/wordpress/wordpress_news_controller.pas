@@ -54,7 +54,7 @@ implementation
 
 uses database_lib, common, language_lib, html_lib, theme_controller, RegExpr,
   wordpress_options_model, wordpress_nggallery_model, wordpress_pages_model,
-  wordpress_category_controller;
+  wordpress_category_controller, wordpress_site_lib;
 
 const
   NEWS_PER_PAGE = 9;        // cards per page; page 1 shows one extra (hero)
@@ -365,28 +365,12 @@ begin
 end;
 
 function TWPNewsWebModule.NewsImageURL(const NewsID: integer; const Content: string): string;
-const
-  UPLOADS = 'wp-content/uploads/';
-var
-  upload_url: string;
 begin
   // 1. featured image, 2. first image in the content
   Result := Featuredimage.GetFeaturedImageURLByID(NewsID);
   if Result = '' then
     Exit(FirstImageURL(Content));
-  if Pos('://', Result) > 0 then
-    Exit;
-
-  // optional "wordpress/upload_url": the public url of wp-content/uploads,
-  // for sites whose media live on another host (cdn / content domain)
-  upload_url := Trim(string(Config.GetValue('wordpress/upload_url', '')));
-  while (upload_url <> '') and (upload_url[Length(upload_url)] = '/') do
-    System.Delete(upload_url, Length(upload_url), 1);
-  if (upload_url <> '') and (Pos(UPLOADS, Result) = 1) then
-    Result := upload_url + '/' + Copy(Result, Length(UPLOADS) + 1, MaxInt)
-  else
-    Result := string(Config.GetValue('wordpress/base_url', '')) +
-      string(Config.GetValue('wordpress/path', '')) + '/' + Result;
+  Result := WPUploadURL(Result);
 end;
 
 function TWPNewsWebModule.Search(const Keyword: string): string;
@@ -516,7 +500,9 @@ begin
         begin
           thumb := '<img src="' + HTMLEncode(image) + '" alt=""';
           if (n > 0) or is_search then
-            thumb := thumb + ' loading="lazy"';
+            thumb := thumb + ' loading="lazy"'
+          else
+            thumb := thumb + ' fetchpriority="high"';   // first card: the largest image on screen
           thumb := thumb + ' decoding="async">';
         end
         else
@@ -745,7 +731,8 @@ end;
 
 function TWPNewsWebModule.View: string;
 var
-  thumbnail_url, title, year_month: string;
+  thumbnail_url, title, summary, year_month: string;
+  logo_w, logo_h: integer;
 begin
   PrepareModels;
 
@@ -761,7 +748,7 @@ begin
   year_month := RequestYearMonth;
   if year_month = '' then
   begin
-    Result := H2(__(__Content_Not_Found));
+    Result := NotFoundContent;
     Exit;
   end;
 
@@ -772,34 +759,33 @@ begin
 
   if News.RecordCount = 0 then
   begin
-    Result := H2(__(__Content_Not_Found));
+    Result := NotFoundContent;
     Exit;
   end;
 
   Terms.GetObjectTerms(integer(News['ID']), ['post_tag']);
-  thumbnail_url := Featuredimage.GetFeaturedImageURLByID(integer(News['ID']));
-  if thumbnail_url = '' then
-    thumbnail_url := string(Config.GetValue('wordpress/base_url', '')) + '/logo.png'
+  // featured image, else the first image in the post, else the site logo
+  thumbnail_url := NewsImageURL(integer(News['ID']), string(News['post_content']));
+  if thumbnail_url <> '' then
+    ThemeUtil.Assign('featured_image', thumbnail_url)
   else
-  begin
-    thumbnail_url := string(Config.GetValue('wordpress/base_url', '')) +
-      string(Config.GetValue('wordpress/path', '')) + '/' + thumbnail_url;
-    ThemeUtil.Assign('featured_image', thumbnail_url);
-  end;
+    WPSiteLogo(thumbnail_url, logo_w, logo_h);
 
   ThemeUtil.Assign('$news', @News.Data);
   ThemeUtil.Assign('$terms', @Terms.Data);
   //or use this : ThemeUtil.AssignVar['$news'] := @News.Data;
 
-  // facebook content sharing
-  title := string(News['post_title']);
-  ThemeUtil.AddMeta('description', title, 'property');
+  // share preview (WhatsApp, Facebook, X ...)
+  title := MetaText(string(News['post_title']), 0);
+  summary := MetaText(NewsExcerpt(string(News['post_excerpt']), string(News['post_content'])));
+  ThemeUtil.AddMeta('description', summary, 'name');
   ThemeUtil.AddMeta('og:type', 'article', 'property');
   ThemeUtil.AddMeta('og:title', title, 'property');
-  ThemeUtil.AddMeta('og:site_name', GetOptions('blogname'), 'property');
-  ThemeUtil.AddMeta('og:description', GetOptions('blogdescription') + ', ' + title, 'property');
-  ThemeUtil.AddMeta('og:image', thumbnail_url, 'property');
-  // facebook content sharing - end
+  ThemeUtil.AddMeta('og:site_name', MetaText(GetOptions('blogname'), 0), 'property');
+  ThemeUtil.AddMeta('og:description', summary, 'property');
+  if thumbnail_url <> '' then
+    ThemeUtil.AddMeta('og:image', MetaText(thumbnail_url, 0), 'property');
+  // share preview - end
 
   ThemeUtil.Assign('date01', '2014/12/30');
   ThemeUtil.Assign('date02', '2015/01/12');
@@ -839,6 +825,15 @@ begin
     begin
       ResponseString := GetOptions(Parameter.Values['name']);
     end;
+    // [text mod=wpnews func=sitelogo class=site-logo]: the logo set in
+    // WordPress (Appearance > Customize > Site Identity), '' when there is none
+    'sitelogo':
+    begin
+      if Parameter.Values['class'] <> '' then
+        ResponseString := WPSiteLogoHTML(Parameter.Values['class'])
+      else
+        ResponseString := WPSiteLogoHTML;
+    end;
     'newstitle':
     begin
       if _GET['permalink'] <> '' then
@@ -877,7 +872,7 @@ begin
                   'post_name=' + QuoteValue(pageName)]);
                 if RecordCount > 0 then
                 begin
-                  ResponseString := Value['post_title'];
+                  ResponseString := ' - ' + string(Value['post_title']);
                 end;
                 Free;
               end;

@@ -18,6 +18,7 @@ type
   TWPPagesWebModule = class(TMyCustomController)
   private
     Posts, Pages: TWordpressPages;
+    procedure PrepareModels;
     function Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
   public
     constructor CreateNew(AOwner: TComponent; CreateMode: integer); override;
@@ -36,7 +37,7 @@ type
 implementation
 
 uses database_lib, common, html_lib, language_lib, theme_controller,
-  wordpress_nggallery_model, wordpress_news_model;
+  wordpress_nggallery_model, wordpress_news_model, wordpress_site_lib;
 
 {$ifdef wordpress}
 
@@ -77,8 +78,18 @@ begin
   inherited CreateNew(AOwner, CreateMode);
   CreateSession := True;
   OnBlockController := @DoBlockController;
-  Pages := TWordpressPages.Create();
-  Posts := TWordpressPages.Create();
+  // the models are created by PrepareModels, not here: a model takes the
+  // table prefix when it is created, and the prefix is only known after
+  // DataBaseInit (Get runs it after this constructor). Created here, the
+  // queries went to "posts" instead of "<prefix>posts" and failed.
+end;
+
+procedure TWPPagesWebModule.PrepareModels;
+begin
+  if Pages = nil then
+    Pages := TWordpressPages.Create();
+  if Posts = nil then
+    Posts := TWordpressPages.Create();
 end;
 
 destructor TWPPagesWebModule.Destroy;
@@ -90,16 +101,17 @@ end;
 
 function TWPPagesWebModule.View: string;
 var
-  post_filter, title, page_name: string;
+  post_filter, title, page_name, summary, logo_url: string;
+  logo_w, logo_h: integer;
   str: TStrings;
   i: integer;
 begin
+  PrepareModels;
   str := Explode(Application.Request.PathInfo, '/');
   try
     if str.Count < 3 then
     begin
-      Result := H2(__(__Content_Not_Found), 'center');
-      Redirect(BaseURL);
+      Result := NotFoundContent;
       Exit;
     end;
 
@@ -124,7 +136,7 @@ begin
   Pages.Find(['post_status="publish"', 'post_type="page"', 'post_name=' + Pages.QuoteValue(page_name)]);
   if Pages.RecordCount = 0 then
   begin
-    Result := H2(__(__Content_Not_Found), 'center');
+    Result := NotFoundContent;
     Exit;
   end;
 
@@ -132,13 +144,18 @@ begin
   ThemeUtil.AssignVar['$page'] := @Pages.Data;
   ThemeUtil.AssignVar['$posts'] := @Posts.Data;
 
-  // facebook content sharing
-  title := Pages.Data.FieldByName('post_title').AsString;
+  // share preview (WhatsApp, Facebook, X ...)
+  title := MetaText(Pages.Data.FieldByName('post_title').AsString, 0);
+  summary := MetaText(Pages.Data.FieldByName('post_content').AsString);
+  if summary <> '' then
+    ThemeUtil.AddMeta('description', summary, 'name');
   ThemeUtil.AddMeta('og:type', 'article', 'property');
   ThemeUtil.AddMeta('og:title', title, 'property');
-  ThemeUtil.AddMeta('og:site_name', AppData.sitename, 'property');
-  ThemeUtil.AddMeta('og:description', AppData.sitename + ', ' + title, 'property');
-  ThemeUtil.AddMeta('og:image', BaseURL + '/logo.png', 'property');
+  ThemeUtil.AddMeta('og:site_name', MetaText(WPOption('blogname'), 0), 'property');
+  if summary <> '' then
+    ThemeUtil.AddMeta('og:description', summary, 'property');
+  if WPSiteLogo(logo_url, logo_w, logo_h) then
+    ThemeUtil.AddMeta('og:image', MetaText(logo_url, 0), 'property');
 
   Result := ThemeUtil.RenderFromContent(@TagController, '', 'modules/pages/detail.html');
 end;

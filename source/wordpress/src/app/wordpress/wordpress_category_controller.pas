@@ -33,7 +33,7 @@ type
 implementation
 
 uses wordpress_terms_model, wordpress_news_model, database_lib, html_lib,
-  common, language_lib, theme_controller;
+  common, language_lib, theme_controller, wordpress_site_lib;
 
 { TWPCategoryWebModule }
 
@@ -109,7 +109,7 @@ begin
     Terms.FindFirst(['taxonomy="category"', 'slug=' + Terms.QuoteValue(_GET['name'])], 'name');
     if Terms.RecordCount = 0 then
     begin
-      Result := H2(__(__Content_Not_Found), 'center');
+      Result := NotFoundContent;
       Exit;
     end;
     category_id := Terms.Value['term_id'];

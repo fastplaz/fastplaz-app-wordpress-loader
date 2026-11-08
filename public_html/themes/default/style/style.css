@@ -100,16 +100,47 @@ blockquote { margin: 1em 0; padding: .5em 1em; border-left: 4px solid var(--prim
   gap: 20px;
 }
 
+/* brand: [logo] judul + slogan (logo & slogan opsional, diatur di WordPress) */
 .site-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text);
+}
+.site-brand:hover, .site-brand:focus { color: var(--primary); text-decoration: none; }
+.site-logo {
+  display: block;
+  flex: 0 0 auto;
+  width: auto;
+  height: 40px;
+  max-width: 160px;
+  object-fit: contain;
+}
+.site-brand-text { display: flex; flex-direction: column; min-width: 0; }
+.site-title {
   font-weight: 700;
   font-size: 1.15rem;
-  color: var(--text);
+  line-height: 1.2;
+  /* judul panjang turun ke baris kedua, tidak dipotong "..." */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.site-tagline {
+  font-size: .8rem;
+  line-height: 1.3;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
 }
-.site-brand:hover, .site-brand:focus { color: var(--primary); text-decoration: none; }
+.site-tagline:empty { display: none; }
+
+/* focus keyboard: satu ring yang jelas untuk semua kontrol */
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.site-brand:focus-visible { border-radius: 4px; }
 
 .site-navigation {
   display: flex;
@@ -177,7 +208,8 @@ blockquote { margin: 1em 0; padding: .5em 1em; border-left: 4px solid var(--prim
   color: var(--text);
   transition: width .2s ease, border-color .2s ease;
 }
-.search-field:focus { outline: none; border-color: var(--primary); background: #fff; width: 220px; }
+.search-field:focus { border-color: var(--primary); background: #fff; width: 220px; }
+.search-field:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
 .search-submit {
   position: absolute; right: 4px;
   width: 32px; height: 32px;
@@ -237,6 +269,13 @@ blockquote { margin: 1em 0; padding: .5em 1em; border-left: 4px solid var(--prim
 .entry-meta { color: var(--text-muted); font-size: .9rem; }
 .entry-content { font-size: 1.02rem; }
 .entry-content::after { content: ""; display: table; clear: both; }
+/* paragraf kosong dari editor blok WordPress membuat celah besar */
+.entry-content p:empty { display: none; }
+
+/* halaman tidak ditemukan (404) */
+.not-found { padding: 12px 0 8px; }
+.not-found .entry-title { margin-bottom: 8px; }
+.not-found .feed-search { margin: 20px 0 16px; }
 
 article.post + article.post { margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--border); }
 
@@ -272,7 +311,8 @@ article.post + article.post { margin-top: 32px; padding-top: 32px; border-top: 1
   color: var(--text);
   background: #f8f9fb;
 }
-.feed-search input:focus { outline: none; border-color: var(--primary); background: #fff; }
+.feed-search input:focus { border-color: var(--primary); background: #fff; }
+.feed-search input:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
 .feed-search button {
   height: 44px;
   padding: 0 20px;
@@ -497,7 +537,9 @@ body.lightbox-open { overflow: hidden; }
   transition: background .15s ease;
 }
 .lightbox-close:hover, .lightbox-nav:hover,
-.lightbox-close:focus-visible, .lightbox-nav:focus-visible { background: rgba(255, 255, 255, .25); outline: none; }
+.lightbox-close:focus-visible, .lightbox-nav:focus-visible { background: rgba(255, 255, 255, .25); }
+/* latar gelap: ring putih, bukan merah */
+.lightbox-close:focus-visible, .lightbox-nav:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .lightbox-close {
   top: 12px; right: 12px;
   width: 44px; height: 44px;
@@ -559,6 +601,9 @@ body.lightbox-open { overflow: hidden; }
 @media (max-width: 899px) {
   :root { --header-h: 58px; }
 
+  .site-logo { height: 34px; max-width: 120px; }
+  .site-title { font-size: 1rem; }
+
   .menu-toggle { display: flex; }
 
   .site-navigation {
@@ -617,6 +662,11 @@ body.lightbox-open { overflow: hidden; }
   .entry-content > ul > li.first-post > a:first-child { font-size: 1.25rem; }
 
   .footer-inner { flex-direction: column; text-align: center; }
+}
+
+/* HP: header 58px cukup untuk judul 2 baris, slogan disembunyikan */
+@media (max-width: 599px) {
+  .site-tagline { display: none; }
 }
 
 @media (max-width: 480px) {

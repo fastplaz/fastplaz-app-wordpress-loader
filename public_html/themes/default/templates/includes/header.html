@@ -1,7 +1,15 @@
 <a class="skip-link" href="#content">Langsung ke konten</a>
 <header id="masthead" class="site-header" role="banner">
   <div class="container header-inner">
-    <a class="site-brand" href="[$baseurl]" rel="home">[text mod=wpnews func=getoption name=blogname]</a>
+    <!-- logo & slogan come from WordPress: Settings > General (Tagline) and
+         Appearance > Customize > Site Identity (Logo). Both are optional. -->
+    <a class="site-brand" href="[$baseurl]" rel="home">
+      [text mod=wpnews func=sitelogo class=site-logo]
+      <span class="site-brand-text">
+        <span class="site-title">[text mod=wpnews func=getoption name=blogname]</span>
+        <span class="site-tagline">[text mod=wpnews func=getoption name=blogdescription]</span>
+      </span>
+    </a>
 
     <button type="button" class="menu-toggle" aria-controls="site-navigation" aria-expanded="false" aria-label="Menu">
       <span class="menu-toggle-bar"></span>

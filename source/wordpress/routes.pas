@@ -47,4 +47,8 @@ initialization
   Route.Add('pages', '^/pages/.+', TWPPagesWebModule, 'GET');
   {$endif}
 
+  // keep this one last: any other address gets a real 404 page
+  // (instead of the error redirect to the home page)
+  Route.Add('notfound', '^/.+', TNotFoundModule, 'GET');
+
 end.

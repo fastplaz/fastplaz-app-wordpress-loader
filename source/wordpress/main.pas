@@ -23,9 +23,18 @@ type
     procedure Get; override;
   end;
 
+  { TNotFoundModule: every address no other route knows (registered last) }
+
+  TNotFoundModule = class(TMyCustomController)
+  private
+    function Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
+  public
+    procedure Get; override;
+  end;
+
 implementation
 
-uses theme_controller, common, wordpress_news_controller;
+uses theme_controller, common, wordpress_news_controller, wordpress_site_lib;
 
 constructor TMainModule.CreateNew(AOwner: TComponent; CreateMode: integer);
 begin
@@ -39,17 +48,26 @@ end;
 
 // GET Method Handler
 procedure TMainModule.Get;
+var
+  site_name, slogan, logo_url: string;
+  logo_w, logo_h: integer;
 begin
   DataBaseInit;
   LanguageInit;
 
-  // facebook content sharing
-  ThemeUtil.AddMeta('og:type', 'article', 'property');
-  ThemeUtil.AddMeta('og:title', 'FastPlaz, Fast Web Framework for Pascal', 'property');
-  ThemeUtil.AddMeta('og:site_name', AppData.sitename, 'property');
-  ThemeUtil.AddMeta('og:description', AppData.slogan, 'property');
-  ThemeUtil.AddMeta('og:image', string(Config.GetValue('wordpress/base_url', '')) + '/logo.png', 'property');
-  // facebook content sharing - end
+  // share preview (WhatsApp, Facebook, X ...): the identity set in WordPress
+  site_name := MetaText(WPOption('blogname'), 0);
+  slogan := MetaText(WPOption('blogdescription'));
+  if slogan <> '' then
+    ThemeUtil.AddMeta('description', slogan, 'name');
+  ThemeUtil.AddMeta('og:type', 'website', 'property');
+  ThemeUtil.AddMeta('og:title', site_name, 'property');
+  ThemeUtil.AddMeta('og:site_name', site_name, 'property');
+  if slogan <> '' then
+    ThemeUtil.AddMeta('og:description', slogan, 'property');
+  if WPSiteLogo(logo_url, logo_w, logo_h) then
+    ThemeUtil.AddMeta('og:image', MetaText(logo_url, 0), 'property');
+  // share preview - end
 
   if _GET['s'] <> '' then
   begin
@@ -89,5 +107,23 @@ begin
   end;
 end;
 
+{ TNotFoundModule }
+
+procedure TNotFoundModule.Get;
+begin
+  DataBaseInit;
+  LanguageInit;
+  Tags['$maincontent'] := @Tag_MainContent_Handler;
+  ThemeUtil.Layout := 'master';
+  Response.Content := ThemeUtil.Render;
+  // set again after rendering: the status must be 404, not a redirect to "/"
+  Response.Code := 404;
+  Response.CodeText := 'Not Found';
+end;
+
+function TNotFoundModule.Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
+begin
+  Result := NotFoundContent;
+end;
 
 end.
