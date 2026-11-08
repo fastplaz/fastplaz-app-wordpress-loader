@@ -13,7 +13,17 @@
     "cache" : "none",
     "temp" : "ztemp",
     "error_url" : "\/",
-    "error_redirect" : true
+    "error_redirect" : true,
+    "trust_proxy" : false,
+    "server" : {
+      "mode" : "http",
+      "address" : "127.0.0.1",
+      "port" : 17845,
+      "static" : true,
+      "max_requests" : 10000,
+      "db_persistent" : false,
+      "db_idle_timeout" : 300
+    }
   },
   "database" : {
     "default" : {

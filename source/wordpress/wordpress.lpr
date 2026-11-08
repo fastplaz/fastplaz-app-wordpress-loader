@@ -3,7 +3,8 @@ program wordpress;
 {$mode objfpc}{$H+}
 
 uses
-  fpcgi,
+  {$IFNDEF Windows}cthreads, {$ENDIF}
+  fastplaz_app,
   SysUtils,
   fastplaz_handler,
   common,
@@ -25,18 +26,23 @@ uses
 {$R *.res}
 
 begin
-  Application.Title := 'FastPlaz for Wordpress';
-  Application.Email := Config.GetValue(_SYSTEM_WEBMASTER_EMAIL, 'webmaster@' + GetEnvironmentVariable('SERVER_NAME'));
-  Application.DefaultModuleName := Config.GetValue(_SYSTEM_MODULE_DEFAULT, 'main');
-  Application.ModuleVariable := Config.GetValue(_SYSTEM_MODULE_VARIABLE, 'mod');
+  Application.Title := string( Config.GetValue(_SYSTEM_SITENAME, 'FastPlaz for Wordpress'));
+  Application.Email := string( Config.GetValue(_SYSTEM_WEBMASTER_EMAIL, 'webmaster@' + GetEnvironmentVariable('SERVER_NAME')));
+  Application.DefaultModuleName := string( Config.GetValue(_SYSTEM_MODULE_DEFAULT, 'main'));
+  Application.ModuleVariable := string( Config.GetValue(_SYSTEM_MODULE_VARIABLE, 'mod'));
   Application.AllowDefaultModule := True;
-  Application.RedirectOnErrorURL := Config.GetValue(_SYSTEM_ERROR_URL, '/');
+  Application.RedirectOnErrorURL := string( Config.GetValue(_SYSTEM_ERROR_URL, '/'));
   Application.RedirectOnError := Config.GetValue(_SYSTEM_ERROR_REDIRECT, False);
 
   Application.OnGetModule := @FastPlasAppandler.OnGetModule;
   Application.PreferModuleName := True;
+  {$if FPC_FULLVERSION >= 30004}
+  Application.LegacyRouting := True;
+  {$endif}
+
+  // startup banner, standalone mode only; see OnStandaloneBanner to change it
+  ShowStandaloneBanner;
 
   Application.Initialize;
   Application.Run;
 end.
-

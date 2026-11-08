@@ -30,27 +30,26 @@ end;
 
 {
 example:
-Terms.GetObjectTerms( News['ID'].AsInteger, ['post_tag']);
+Terms.GetObjectTerms( integer(News['ID']), ['post_tag']);
 }
 function TWordpressTerms.GetObjectTerms(const ObjectID: integer; const Taxonomy: array of string): boolean;
 var
   i: integer;
-  where: string;
+  whereSQL: string;
 begin
   Result := False;
-  where := '';
+  whereSQL := '';
   for i := Low(Taxonomy) to High(Taxonomy) do
   begin
-    if where = '' then
-      where := '"' + Taxonomy[i] + '"'
-    else
-      where := where + ',"' + Taxonomy[i] + '"';
+    if whereSQL <> '' then
+      whereSQL := whereSQL + ',';
+    whereSQL := whereSQL + QuoteValue(Taxonomy[i]);
   end;
-  where := AppData.tablePrefix + 'term_taxonomy.taxonomy IN (' + where + ')';
+  whereSQL := AppData.tablePrefix + 'term_taxonomy.taxonomy IN (' + whereSQL + ')';
 
   AddInnerJoin('term_taxonomy', 'term_id', 'terms.term_id', ['count']);
   AddInnerJoin('term_relationships', 'term_taxonomy_id', 'term_taxonomy.term_taxonomy_id', []);
-  Find([where, AppData.tablePrefix + 'term_relationships.object_id=' + i2s(ObjectID)],
+  Find([whereSQL, AppData.tablePrefix + 'term_relationships.object_id=' + i2s(ObjectID)],
     AppData.tablePrefix + 'terms.name ASC');
   if RecordCount > 0 then
     Result := True;

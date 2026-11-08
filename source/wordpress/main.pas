@@ -5,14 +5,14 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, fpcgi, HTTPDefs, fastplaz_handler, html_lib, database_lib, wordpress_news_model;
+  Classes, SysUtils, fastplaz_app, HTTPDefs, fastplaz_handler, html_lib, database_lib,
+  wordpress_news_model;
 
 type
 
   { TMainModule }
 
-  TMainModule = class(TMyCustomWebModule)
-    procedure RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse; var Handled: boolean);
+  TMainModule = class(TMyCustomController)
   private
     News: TWordpressNews;
     function Tag_Search_ContentHandler(const TagName: string; Params: TStringList): string;
@@ -20,6 +20,8 @@ type
   public
     constructor CreateNew(AOwner: TComponent; CreateMode: integer); override;
     destructor Destroy; override;
+
+    procedure Get; override;
   end;
 
 implementation
@@ -30,7 +32,6 @@ constructor TMainModule.CreateNew(AOwner: TComponent; CreateMode: integer);
 begin
   inherited CreateNew(AOwner, CreateMode);
   News := TWordpressNews.Create();
-  OnRequest := @RequestHandler;
 end;
 
 destructor TMainModule.Destroy;
@@ -39,7 +40,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TMainModule.RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse; var Handled: boolean);
+// GET Method Handler
+procedure TMainModule.Get;
 begin
   DataBaseInit;
   LanguageInit;
@@ -49,7 +51,7 @@ begin
   ThemeUtil.AddMeta('og:title', 'FastPlaz, Fast Web Framework for Pascal', 'property');
   ThemeUtil.AddMeta('og:site_name', AppData.sitename, 'property');
   ThemeUtil.AddMeta('og:description', AppData.slogan, 'property');
-  ThemeUtil.AddMeta('og:image', Config.GetValue('wordpress/base_url', '') + '/logo.png', 'property');
+  ThemeUtil.AddMeta('og:image', string(Config.GetValue('wordpress/base_url', '')) + '/logo.png', 'property');
   // facebook content sharing - end
 
   if _GET['s'] <> '' then
@@ -64,28 +66,28 @@ begin
     ThemeUtil.Layout := 'master'; // try with 'home'
     Response.Content := ThemeUtil.Render;
   end;
-
-
-  Handled := True;
 end;
 
 function TMainModule.Tag_Search_ContentHandler(const TagName: string; Params: TStringList): string;
+var
+  keyword: string;
 begin
-  News.SearchNews(_GET['s']);
+  keyword := Trim(_GET['s']);
+  News.SearchNews(keyword);
   ThemeUtil.AssignVar['$news'] := @News.Data;
-  ThemeUtil.Assign('search', _GET['s']);
+  // the keyword comes from the request: encode it for the page and the link
+  ThemeUtil.Assign('search', HTMLEncode(keyword));
+  ThemeUtil.Assign('search_url', UrlEncode(keyword));
   Result := ThemeUtil.RenderFromContent(nil, '', 'modules/wpnews/search.html');
 end;
 
 function TMainModule.Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
 begin
-
   with TWPNewsWebModule.CreateNew(self, 0) do
   begin
     Result := View;
     Free;
   end;
-
 end;
 
 

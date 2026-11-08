@@ -31,7 +31,7 @@ var
 
 implementation
 
-uses common, fastplaz_handler, logutil_lib, theme_controller;
+uses common, fastplaz_handler, logutil_lib, theme_controller, html_lib;
 
 { TWPNGGallery }
 
@@ -39,50 +39,59 @@ procedure TWPNGGallery.ngTagController(Sender: TObject; const TagString: string;
   out ReplaceText: string);
 var
   tags: TStrings;
-  id, src: string;
+  id: integer;
+  src, alt: string;
 begin
   ReplaceText := TagString;
   tags := Explode(TagString, ' ');
-  if tags.Count = 0 then
-  begin
-    FreeAndNil(tags);
-    Exit;
-  end;
+  try
+    if tags.Count = 0 then
+      Exit;
 
-  case tags[0] of
-    'singlepic':
-    begin
-      id := tags.Values['id'];
-      AddJoin('ngg_gallery', 'gid', 'galleryid', ['path']);
-      FindFirst([AppData.tablePrefix + '_ngg_pictures.pid=' + id],
-        '', 'filename,alttext');
-      if Data.RecordCount > 0 then
+    case tags[0] of
+      'singlepic':
       begin
-        src := BaseURL + FPath + '/' + Value['path'].AsString + '/' + Value['filename'].AsString;
-        ReplaceText := '<div><img src="' + src + '"';
-        if tags.Values['w'] <> '' then
-          ReplaceText := ReplaceText + ' width="' + tags.Values['w'];
-        if tags.Values['h'] <> '' then
-          ReplaceText := ReplaceText + ' height="' + tags.Values['h'];
-        if tags.Values['float'] <> '' then
-          ReplaceText := ReplaceText + ' class="ngg-singlepic float_' + tags.Values['float'] + '"';
-        ReplaceText := ReplaceText + ' alt="' + Value['alttext'].AsString + '"';
-        ReplaceText := ReplaceText + ' title="' + Value['alttext'].AsString + '"';
-        ReplaceText := ReplaceText + '></div>';
+        // the parameters come from the post content: numbers only
+        id := s2i(tags.Values['id']);
+        if id <= 0 then
+          Exit;
+        AddJoin('ngg_gallery', 'gid', 'galleryid', ['path']);
+        FindFirst([AppData.tablePrefix + 'ngg_pictures.pid=' + i2s(id)],
+          '', 'filename,alttext');
+        if Data.RecordCount > 0 then
+        begin
+          src := BaseURL + FPath + '/' + string(Value['path']) + '/' + string(Value['filename']);
+          alt := HTMLEncode(string(Value['alttext']));
+          ReplaceText := '<div><img src="' + src + '"';
+          if s2i(tags.Values['w']) > 0 then
+            ReplaceText := ReplaceText + ' width="' + i2s(s2i(tags.Values['w'])) + '"';
+          if s2i(tags.Values['h']) > 0 then
+            ReplaceText := ReplaceText + ' height="' + i2s(s2i(tags.Values['h'])) + '"';
+          case tags.Values['float'] of
+            'left', 'right', 'center':
+              ReplaceText := ReplaceText + ' class="ngg-singlepic float_' + tags.Values['float'] + '"';
+          end;
+          ReplaceText := ReplaceText + ' alt="' + alt + '"';
+          ReplaceText := ReplaceText + ' title="' + alt + '"';
+          ReplaceText := ReplaceText + '></div>';
+        end;
       end;
     end;
+  finally
+    FreeAndNil(tags);
   end;
-
 end;
 
 constructor TWPNGGallery.Create(const DefaultTableName: string);
 begin
   inherited Create('ngg_pictures');
-  Path := Config.GetValue('wordpress/path', '');
-  BaseURL := Config.GetValue('wordpress/base_url', '');
+  Path := string(Config.GetValue('wordpress/path', ''));
+  BaseURL := string(Config.GetValue('wordpress/base_url', ''));
   if BaseURL = '' then
   begin
-    BaseURL := 'http://' + GetEnvironmentVariable('SERVER_NAME');
+    // works in both modes: in standalone mode the process environment has
+    // no SERVER_NAME, it comes from the request
+    BaseURL := 'http://' + _SERVER['SERVER_NAME'];
   end;
 end;
 
