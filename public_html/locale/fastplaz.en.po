@@ -31,3 +31,197 @@ msgstr ""
 
 msgid "Category"
 msgstr ""
+
+# wideworld theme: menu, labels, footer
+
+msgid "Skip to content"
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Main menu"
+msgstr ""
+
+msgid "News"
+msgstr ""
+
+msgid "News categories"
+msgstr ""
+
+msgid "Search news"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Random reads"
+msgstr ""
+
+msgid "Latest News"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Pages"
+msgstr ""
+
+msgid "Powered by"
+msgstr ""
+
+msgid "Categories and random reads"
+msgstr ""
+
+msgid "Latest news and tags"
+msgstr ""
+
+# news list, search, pagination
+
+msgid "No news yet."
+msgstr ""
+
+msgid "Search results:"
+msgstr ""
+
+msgid "1 story found"
+msgstr ""
+
+msgid "%d stories found"
+msgstr ""
+
+msgid "Page %d"
+msgstr ""
+
+msgid "Page %d of %d"
+msgstr ""
+
+msgid "No news matches %s. Try another keyword."
+msgstr ""
+
+msgid "This page is empty."
+msgstr ""
+
+msgid "Back to the first page"
+msgstr ""
+
+msgid "Read the full story"
+msgstr ""
+
+msgid "Page navigation"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+# page not found
+
+msgid "Page not found"
+msgstr ""
+
+msgid "The address you opened does not exist, or the story has moved."
+msgstr ""
+
+msgid "See the latest news"
+msgstr ""
+
+# dates
+
+msgid "Sunday"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
+msgstr ""
+
+msgid "Jan"
+msgstr ""
+
+msgid "Feb"
+msgstr ""
+
+msgid "Mar"
+msgstr ""
+
+msgid "Apr"
+msgstr ""
+
+msgid "Jun"
+msgstr ""
+
+msgid "Jul"
+msgstr ""
+
+msgid "Aug"
+msgstr ""
+
+msgid "Sep"
+msgstr ""
+
+msgid "Oct"
+msgstr ""
+
+msgid "Nov"
+msgstr ""
+
+msgid "Dec"
+msgstr ""

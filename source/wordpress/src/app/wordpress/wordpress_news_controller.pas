@@ -75,15 +75,16 @@ const
   NEWS_MAX_PAGE = 10000;
   NEWS_EXCERPT_LENGTH = 180;
   NEWS_HERO_EXCERPT_LENGTH = 420;   // newshero: a longer part of the story
-  NEWS_MONTHS: array[1..12] of string = ('Jan', 'Feb', 'Mar', 'Apr', 'Mei',
-    'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des');
+  // English names are the msgid, locale/fastplaz.<lang>.po translates them
+  NEWS_MONTHS: array[1..12] of string = ('Jan', 'Feb', 'Mar', 'Apr', 'May',
+    'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 
 function FormatNewsDate(const ADate: TDateTime): string;
 var
   y, m, d: word;
 begin
   DecodeDate(ADate, y, m, d);
-  Result := IntToStr(d) + ' ' + NEWS_MONTHS[m] + ' ' + IntToStr(y);
+  Result := IntToStr(d) + ' ' + __(NEWS_MONTHS[m]) + ' ' + IntToStr(y);
 end;
 
 // src of the first <img> in the post content, '' when there is none
@@ -231,19 +232,20 @@ begin
 end;
 
 const
-  NEWS_DAYS: array[1..7] of string = ('Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis',
-    'Jumat', 'Sabtu');
-  NEWS_MONTHS_LONG: array[1..12] of string = ('Januari', 'Februari', 'Maret', 'April',
-    'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
+  // msgid, translated by locale/fastplaz.<lang>.po
+  NEWS_DAYS: array[1..7] of string = ('Sunday', 'Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday');
+  NEWS_MONTHS_LONG: array[1..12] of string = ('January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 
-// "Senin, 9 November 2026"
+// "Senin, 9 November 2026" / "Monday, 9 November 2026"
 function FormatLongDate(const ADate: TDateTime): string;
 var
   y, m, d: word;
 begin
   DecodeDate(ADate, y, m, d);
-  Result := NEWS_DAYS[DayOfWeek(ADate)] + ', ' + IntToStr(d) + ' ' + NEWS_MONTHS_LONG[m] +
-    ' ' + IntToStr(y);
+  Result := __(NEWS_DAYS[DayOfWeek(ADate)]) + ', ' + IntToStr(d) + ' ' +
+    __(NEWS_MONTHS_LONG[m]) + ' ' + IntToStr(y);
 end;
 
 function NewsURL(const PostDate: TDateTime; const PostName: string): string;
@@ -495,8 +497,6 @@ var
   slugs, seen: TStringList;
   post_date: TDateTime;
   url, image, list_class, excerpt: string;
-const
-  EMPTY_LIST = '<p class="ww-empty">Belum ada berita.</p>';
 begin
   Result := '';
   PrepareModels;
@@ -551,7 +551,7 @@ begin
       slugs.Free;
     end;
     if tax_ids = '' then
-      Exit(EMPTY_LIST);
+      Exit('<p class="ww-empty">' + __('No news yet.') + '</p>');
   end;
 
   _News := TWordpressNews.Create();
@@ -571,7 +571,7 @@ begin
     end;
 
     if _News.RecordCount = 0 then
-      Exit(EMPTY_LIST);
+      Exit('<p class="ww-empty">' + __('No news yet.') + '</p>');
 
     lst.Add('<ul class="ww-list ' + list_class + '">');
     n := 0;
@@ -649,7 +649,7 @@ begin
         'ID,post_title,post_name,post_date,post_excerpt,post_content');
     end;
     if _News.RecordCount = 0 then
-      Exit('<p class="ww-empty">Belum ada berita.</p>');
+      Exit('<p class="ww-empty">' + __('No news yet.') + '</p>');
 
     post_date := TDateTime(_News['post_date']);
     url := NewsURL(post_date, string(_News['post_name']));
@@ -903,32 +903,37 @@ begin
     lst.Add('<header class="feed-header">');
     if is_search then
     begin
-      lst.Add('<h1 class="feed-title">Hasil pencarian: <q>' + keyword_html + '</q></h1>');
-      if total > 0 then
-        lst.Add('<p class="feed-meta">' + IntToStr(total) + ' berita ditemukan</p>');
+      lst.Add('<h1 class="feed-title">' + __('Search results:') + ' <q>' + keyword_html +
+        '</q></h1>');
+      if total = 1 then
+        lst.Add('<p class="feed-meta">' + __('1 story found') + '</p>')
+      else if total > 1 then
+        lst.Add('<p class="feed-meta">' + Format(__('%d stories found'), [total]) + '</p>');
       lst.Add('<form role="search" method="get" class="feed-search" action="/">' +
-        '<label class="screen-reader-text" for="feed-search-field">Cari berita:</label>' +
+        '<label class="screen-reader-text" for="feed-search-field">' + __('Search news') +
+        '</label>' +
         '<input type="search" id="feed-search-field" name="s" value="' + keyword_html +
-        '" placeholder="Cari berita&hellip;">' +
-        '<button type="submit">Cari</button></form>');
+        '" placeholder="' + __('Search news') + '&hellip;">' +
+        '<button type="submit">' + __('Search') + '</button></form>');
     end
     else if page = 1 then
-      lst.Add('<h1 class="feed-title">Berita Terbaru</h1>')
+      lst.Add('<h1 class="feed-title">' + __('Latest News') + '</h1>')
     else
-      lst.Add('<h1 class="feed-title">Berita Terbaru <span class="feed-page">Halaman ' +
-        IntToStr(page) + '</span></h1>');
+      lst.Add('<h1 class="feed-title">' + __('Latest News') + ' <span class="feed-page">' +
+        Format(__('Page %d'), [page]) + '</span></h1>');
     lst.Add('</header>');
 
     if _News.RecordCount = 0 then
     begin
       if is_search and (page = 1) then
-        lst.Add('<p class="feed-empty">Tidak ada berita yang cocok dengan <q>' + keyword_html +
-          '</q>. Coba kata kunci lain.</p>')
+        lst.Add('<p class="feed-empty">' +
+          Format(__('No news matches %s. Try another keyword.'), ['<q>' + keyword_html + '</q>']) +
+          '</p>')
       else if is_search then
-        lst.Add('<p class="feed-empty">Halaman ini kosong. <a href="?s=' + UrlEncode(Keyword) +
-          '">Kembali ke halaman pertama</a>.</p>')
+        lst.Add('<p class="feed-empty">' + __('This page is empty.') + ' <a href="?s=' +
+          UrlEncode(Keyword) + '">' + __('Back to the first page') + '</a>.</p>')
       else
-        lst.Add('<p class="feed-empty">Belum ada berita.</p>');
+        lst.Add('<p class="feed-empty">' + __('No news yet.') + '</p>');
     end
     else
     begin
@@ -967,7 +972,7 @@ begin
         //  '">' + FormatNewsDate(post_date) + '</time>');
         lst.Add('<p class="news-card-excerpt">' +
           NewsExcerpt(string(_News['post_excerpt']), string(_News['post_content']), Keyword) + '</p>');
-        lst.Add('<a class="news-card-more" href="' + url + '">Baca selengkapnya</a>');
+        lst.Add('<a class="news-card-more" href="' + url + '">' + __('Read the full story') + '</a>');
         lst.Add('</div>');
         lst.Add('</article>');
 
@@ -984,18 +989,18 @@ begin
         page_url := '?s=' + UrlEncode(Keyword) + '&amp;page='
       else
         page_url := '?page=';
-      lst.Add('<nav class="pagination" aria-label="Navigasi halaman">');
+      lst.Add('<nav class="pagination" aria-label="' + __('Page navigation') + '">');
       if page > 1 then
         lst.Add('<a class="pagination-prev" href="' + page_url + IntToStr(page - 1) +
-          '" rel="prev">&larr; Sebelumnya</a>');
+          '" rel="prev">&larr; ' + __('Previous') + '</a>');
       if total_page > 0 then
-        lst.Add('<span class="pagination-current">Halaman ' + IntToStr(page) + ' dari ' +
-          IntToStr(total_page) + '</span>')
+        lst.Add('<span class="pagination-current">' +
+          Format(__('Page %d of %d'), [page, total_page]) + '</span>')
       else
-        lst.Add('<span class="pagination-current">Halaman ' + IntToStr(page) + '</span>');
+        lst.Add('<span class="pagination-current">' + Format(__('Page %d'), [page]) + '</span>');
       if has_next then
         lst.Add('<a class="pagination-next" href="' + page_url + IntToStr(page + 1) +
-          '" rel="next">Berikutnya &rarr;</a>');
+          '" rel="next">' + __('Next') + ' &rarr;</a>');
       lst.Add('</nav>');
     end;
     lst.Add('</section>');
@@ -1377,6 +1382,15 @@ begin
     'pagesmenu':
     begin
       ResponseString := GeneratePagesMenu(0, Parameter);
+    end;
+    // [text mod=wpnews func=langswitch class=ww-lang]: ID / EN links for the
+    // theme labels; languages from config.json "languages"
+    'langswitch':
+    begin
+      if Parameter.Values['class'] <> '' then
+        ResponseString := LanguageSwitchHTML(Parameter.Values['class'])
+      else
+        ResponseString := LanguageSwitchHTML;
     end;
 
   end;

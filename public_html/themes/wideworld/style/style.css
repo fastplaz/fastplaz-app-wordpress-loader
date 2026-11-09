@@ -135,6 +135,29 @@ button, [role="button"], label[for], summary { cursor: pointer; }
 }
 .ww-topbar-tagline { font-family: var(--font-head); font-style: italic; color: var(--ink); }
 .ww-topbar-tagline:empty { display: none; }
+/* pilihan bahasa: kode singkat di ujung kanan baris info; yang aktif tebal
+   dengan garis emas (warna utama), lainnya teks kedua */
+/* tanggal kiri, slogan + bahasa kanan; tanggal panjang di HP sempit boleh
+   turun baris, pilihan bahasa tetap utuh */
+.ww-today { margin-right: auto; min-width: 0; }
+.ww-lang { flex-shrink: 0; }
+.ww-lang ul { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+.ww-lang li + li { border-left: 1px solid var(--line); }
+.ww-lang a, .ww-lang .is-current {
+  display: inline-flex; align-items: center; min-height: 34px; padding: 0 10px;
+  font-weight: 600; letter-spacing: .04em;
+}
+.ww-lang a { color: var(--ink-soft); text-decoration: none; transition: color .15s; }
+.ww-lang a:hover { color: var(--gold-ink); text-decoration: underline; text-decoration-color: var(--gold); }
+.ww-lang a:active { color: var(--ink); }
+.ww-lang .is-current {
+  color: var(--ink); font-weight: 700;
+  text-decoration: underline; text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px; text-underline-offset: 4px;
+}
+@media (pointer: coarse) {
+  .ww-lang a, .ww-lang .is-current { min-height: 44px; min-width: 44px; justify-content: center; }
+}
 
 /* baris 2: utama */
 .ww-header {

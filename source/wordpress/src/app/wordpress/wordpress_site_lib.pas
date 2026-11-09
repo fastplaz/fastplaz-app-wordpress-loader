@@ -34,10 +34,15 @@ function WPSiteLogoHTML(const CssClass: string = 'site-logo'; Light: boolean = F
 function MetaText(const Text: string; MaxLength: integer = 200): string;
 // sets the 404 status and returns the "page not found" content
 function NotFoundContent: string;
+// language switch for the theme labels (articles stay in one language):
+// one link per language in config.json "languages" (default ["id", "en"]),
+// the current one as plain text; '' when there is only one language
+function LanguageSwitchHTML(const CssClass: string = 'lang-switch'): string;
 
 implementation
 
-uses fastplaz_app, fastplaz_handler, common, html_lib, RegExpr,
+uses fastplaz_app, fastplaz_handler, common, html_lib, language_lib, RegExpr,
+  fpjson, jsonparser,
   wordpress_options_model, wordpress_featuredimage_model;
 
 const
@@ -243,14 +248,150 @@ begin
   Application.Response.CodeText := 'Not Found';
   Result :=
     '<section class="not-found">' +
-    '<h1 class="entry-title">Halaman tidak ditemukan</h1>' +
-    '<p>Alamat yang Anda buka tidak ada, atau beritanya sudah dipindahkan.</p>' +
+    '<h1 class="entry-title">' + __('Page not found') + '</h1>' +
+    '<p>' + __('The address you opened does not exist, or the story has moved.') + '</p>' +
     '<form role="search" method="get" class="feed-search" action="/">' +
-    '<label class="screen-reader-text" for="notfound-search-field">Cari berita:</label>' +
-    '<input type="search" id="notfound-search-field" name="s" placeholder="Cari berita&hellip;">' +
-    '<button type="submit">Cari</button></form>' +
-    '<p class="not-found-home"><a href="/">Lihat berita terbaru</a></p>' +
+    '<label class="screen-reader-text" for="notfound-search-field">' + __('Search news') + '</label>' +
+    '<input type="search" id="notfound-search-field" name="s" placeholder="' +
+    __('Search news') + '&hellip;">' +
+    '<button type="submit">' + __('Search') + '</button></form>' +
+    '<p class="not-found-home"><a href="/">' + __('See the latest news') + '</a></p>' +
     '</section>';
+end;
+
+const
+  DEFAULT_LANGUAGES: array[0..1] of string = ('id', 'en');
+
+// "id", "en", "pt-br": also used in a url, so nothing else gets through
+function IsLanguageCode(const ACode: string): boolean;
+var
+  i: integer;
+begin
+  Result := (Length(ACode) >= 2) and (Length(ACode) <= 5);
+  for i := 1 to Length(ACode) do
+    if not (ACode[i] in ['a'..'z', '-']) then
+      Exit(False);
+end;
+
+// the language's own name, so a reader finds it whatever the page language is
+function LanguageName(const ACode: string): string;
+begin
+  case ACode of
+    'id': Result := 'Bahasa Indonesia';
+    'en': Result := 'English';
+    else
+      Result := '';
+  end;
+end;
+
+// codes from config.json "languages", DEFAULT_LANGUAGES when missing
+function SiteLanguages: TStringList;
+var
+  data: TJSONData;
+  i: integer;
+  code: string;
+begin
+  Result := TStringList.Create;
+  try
+    data := GetJSON(Config.GetString('languages'));
+  except
+    data := nil;
+  end;
+  try
+    if Assigned(data) and (data.JSONType = jtArray) then
+      for i := 0 to data.Count - 1 do
+        if data.Items[i].JSONType = jtString then
+        begin
+          code := LowerCase(Trim(data.Items[i].AsString));
+          if IsLanguageCode(code) and (Result.IndexOf(code) = -1) then
+            Result.Add(code);
+        end;
+  finally
+    data.Free;
+  end;
+  if Result.Count = 0 then
+    for i := Low(DEFAULT_LANGUAGES) to High(DEFAULT_LANGUAGES) do
+      Result.Add(DEFAULT_LANGUAGES[i]);
+end;
+
+// the current address with ?lang=<code>, other query values kept
+// (search keyword, page number)
+function URLWithLanguage(const ACode: string): string;
+var
+  uri, path, query, part, kept: string;
+  p: integer;
+begin
+  uri := Application.Request.URI;
+  p := Pos('?', uri);
+  if p > 0 then
+  begin
+    path := Copy(uri, 1, p - 1);
+    query := Copy(uri, p + 1, MaxInt);
+  end
+  else
+  begin
+    path := uri;
+    query := '';
+  end;
+  // "//host/..." would become a link to another site
+  while Pos('//', path) = 1 do
+    System.Delete(path, 1, 1);
+  if path = '' then
+    path := '/';
+  // the home route reads the language from the path (/en/), which would
+  // win over ?lang=
+  if ExecRegExpr('^/(id|en|us)/?$', path) then
+    path := '/';
+
+  kept := '';
+  while query <> '' do
+  begin
+    p := Pos('&', query);
+    if p = 0 then
+      p := Length(query) + 1;
+    part := Copy(query, 1, p - 1);
+    System.Delete(query, 1, p);
+    if (part = '') or SameText(Copy(part, 1, 5), 'lang=') or SameText(part, 'lang') then
+      Continue;
+    kept := kept + part + '&';
+  end;
+  Result := path + '?' + kept + 'lang=' + ACode;
+end;
+
+function LanguageSwitchHTML(const CssClass: string): string;
+var
+  codes: TStringList;
+  i: integer;
+  code, name, current: string;
+begin
+  Result := '';
+  current := LANG;
+  if current = 'us' then
+    current := 'en';
+  codes := SiteLanguages;
+  try
+    if codes.Count < 2 then
+      Exit;
+    Result := '<nav class="' + HTMLEncode(CssClass) + '" aria-label="' + __('Language') +
+      '"><ul>';
+    for i := 0 to codes.Count - 1 do
+    begin
+      code := codes[i];
+      name := LanguageName(code);
+      if name <> '' then
+        name := '<span class="screen-reader-text"> ' + name + '</span>';
+      if code = current then
+        Result := Result + '<li><span class="is-current" aria-current="true" lang="' + code +
+          '">' + UpperCase(code) + name + '</span></li>'
+      else
+        Result := Result + '<li><a href="' + HTMLEncode(URLWithLanguage(code)) +
+          '" hreflang="' + code + '" lang="' + code + '" rel="nofollow">' + UpperCase(code) +
+          name + '</a></li>';
+    end;
+    Result := Result + '</ul></nav>';
+  finally
+    codes.Free;
+  end;
 end;
 
 end.

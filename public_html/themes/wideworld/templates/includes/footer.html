@@ -11,16 +11,16 @@
 
     <!-- halaman: Beranda, Berita, lalu semua page WordPress (sub-page menjorok) -->
     <nav class="ww-footer-col ww-footer-pages" aria-labelledby="ww-f-halaman">
-      <h2 class="ww-footer-heading" id="ww-f-halaman">Halaman</h2>
+      <h2 class="ww-footer-heading" id="ww-f-halaman">[gt text=Pages]</h2>
       <ul class="ww-footer-list">
-        <li><a href="[$baseurl]">Beranda</a></li>
-        <li><a href="[$baseurl]news/">Berita</a></li>
+        <li><a href="[$baseurl]">[gt text=Home]</a></li>
+        <li><a href="[$baseurl]news/">[gt text=News]</a></li>
         [text mod=wpnews func=pagesmenu type=items]
       </ul>
     </nav>
 
     <nav class="ww-footer-col ww-footer-cats" aria-labelledby="ww-f-kategori">
-      <h2 class="ww-footer-heading" id="ww-f-kategori">Kategori</h2>
+      <h2 class="ww-footer-heading" id="ww-f-kategori">[gt text=Categories]</h2>
       [text mod=category func=categorylist class=ww-footer-list]
     </nav>
   </div>
@@ -28,7 +28,7 @@
   <div class="ww-footer-bottom">
     <div class="ww-wrap ww-footer-bottom-inner">
       <span>&copy; [text mod=wpnews func=today format=year] [text mod=wpnews func=getoption name=blogname]</span>
-      <span>Didukung <a href="http://www.fastplaz.com/" target="_blank" rel="noopener">FastPlaz</a></span>
+      <span>[gt text=Powered by] <a href="http://www.fastplaz.com/" target="_blank" rel="noopener">FastPlaz</a></span>
     </div>
   </div>
 </footer>

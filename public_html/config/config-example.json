@@ -25,6 +25,7 @@
       "db_idle_timeout" : 300
     }
   },
+  "languages": ["id", "en"],
   "hero_banner":[
     {
       "image": "https://picsum.photos/1280/720",

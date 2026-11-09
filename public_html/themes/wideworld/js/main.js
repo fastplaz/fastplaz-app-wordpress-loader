@@ -1,6 +1,14 @@
 (function () {
   'use strict';
 
+  // label yang dibuat lewat JS, mengikuti <html lang> (pilihan bahasa tema);
+  // bahasa lain atau tidak dikenal -> Indonesia
+  var TEXT = {
+    id: { toTop: 'Kembali ke atas', slideOf: '%1 dari %2', image: 'Gambar', close: 'Tutup', prev: 'Sebelumnya', next: 'Berikutnya' },
+    en: { toTop: 'Back to top', slideOf: '%1 of %2', image: 'Image', close: 'Close', prev: 'Previous', next: 'Next' }
+  };
+  var T = TEXT[(document.documentElement.lang || '').toLowerCase().slice(0, 2)] || TEXT.id;
+
   function ready(fn) {
     if (document.readyState !== 'loading') { fn(); } else { document.addEventListener('DOMContentLoaded', fn); }
   }
@@ -100,7 +108,7 @@
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ww-totop';
-    btn.setAttribute('aria-label', 'Kembali ke atas');
+    btn.setAttribute('aria-label', T.toTop);
     btn.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 12.5 10 7l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     document.body.appendChild(btn);
 
@@ -153,7 +161,7 @@
       slides.forEach(function (slide, i) {
         slide.setAttribute('role', 'group');
         slide.setAttribute('aria-roledescription', 'slide');
-        slide.setAttribute('aria-label', (i + 1) + ' dari ' + slides.length);
+        slide.setAttribute('aria-label', T.slideOf.replace('%1', i + 1).replace('%2', slides.length));
         var li = document.createElement('li');
         li.innerHTML = '<button type="button" class="ww-carousel-dot" aria-label="Banner ' + (i + 1) + '"></button>';
         li.firstChild.addEventListener('click', function () { choose(i); });
@@ -289,13 +297,13 @@
     box.className = 'lightbox';
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
-    box.setAttribute('aria-label', 'Gambar');
+    box.setAttribute('aria-label', T.image);
     box.hidden = true;
     box.innerHTML =
-      '<button type="button" class="lightbox-close" aria-label="Tutup">&times;</button>' +
-      '<button type="button" class="lightbox-nav lightbox-prev" aria-label="Sebelumnya">&#8249;</button>' +
+      '<button type="button" class="lightbox-close" aria-label="' + T.close + '">&times;</button>' +
+      '<button type="button" class="lightbox-nav lightbox-prev" aria-label="' + T.prev + '">&#8249;</button>' +
       '<figure class="lightbox-figure"><img class="lightbox-img" alt=""><figcaption class="lightbox-caption"></figcaption></figure>' +
-      '<button type="button" class="lightbox-nav lightbox-next" aria-label="Berikutnya">&#8250;</button>' +
+      '<button type="button" class="lightbox-nav lightbox-next" aria-label="' + T.next + '">&#8250;</button>' +
       '<div class="lightbox-counter" aria-live="polite"></div>';
     document.body.appendChild(box);
 
