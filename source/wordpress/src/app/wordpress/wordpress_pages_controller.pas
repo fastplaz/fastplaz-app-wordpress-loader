@@ -7,7 +7,7 @@ interface
 
 uses
   wordpress_pages_model,
-  fpcgi, fastplaz_handler, httpdefs, fpHTTP,
+  fastplaz_app, fastplaz_handler, httpdefs, fpHTTP,
   Classes, SysUtils;
 
 {$ifdef wordpress}
@@ -15,14 +15,16 @@ type
 
   { TWPPagesWebModule }
 
-  TWPPagesWebModule = class(TMyCustomWebModule)
-    procedure RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse; var Handled: boolean);
+  TWPPagesWebModule = class(TMyCustomController)
   private
     Posts, Pages: TWordpressPages;
+    procedure PrepareModels;
     function Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
   public
     constructor CreateNew(AOwner: TComponent; CreateMode: integer); override;
     destructor Destroy; override;
+
+    procedure Get; override;
     function View: string;
 
     // Handler / Controller
@@ -35,16 +37,15 @@ type
 implementation
 
 uses database_lib, common, html_lib, language_lib, theme_controller,
-  wordpress_nggallery_model, wordpress_news_model;
+  wordpress_nggallery_model, wordpress_news_model, wordpress_site_lib;
 
 {$ifdef wordpress}
 
 { TWPPagesWebModule }
 
 // example:
-// http://domain/page/about/hubungi-kami/
-procedure TWPPagesWebModule.RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse;
-  var Handled: boolean);
+// http://domain/pages/about/hubungi-kami/
+procedure TWPPagesWebModule.Get;
 begin
   DataBaseInit;
   LanguageInit;
@@ -65,8 +66,6 @@ begin
   {$endif}
 
   //==================================== YOUR CUSTOM CMS/FRAMEWORK - END ===
-
-  Handled := True;
 end;
 
 function TWPPagesWebModule.Tag_MainContent_Handler(const TagName: string; Params: TStringList): string;
@@ -78,10 +77,19 @@ constructor TWPPagesWebModule.CreateNew(AOwner: TComponent; CreateMode: integer)
 begin
   inherited CreateNew(AOwner, CreateMode);
   CreateSession := True;
-  OnRequest := @RequestHandler;
   OnBlockController := @DoBlockController;
-  Pages := TWordpressPages.Create();
-  Posts := TWordpressPages.Create();
+  // the models are created by PrepareModels, not here: a model takes the
+  // table prefix when it is created, and the prefix is only known after
+  // DataBaseInit (Get runs it after this constructor). Created here, the
+  // queries went to "posts" instead of "<prefix>posts" and failed.
+end;
+
+procedure TWPPagesWebModule.PrepareModels;
+begin
+  if Pages = nil then
+    Pages := TWordpressPages.Create();
+  if Posts = nil then
+    Posts := TWordpressPages.Create();
 end;
 
 destructor TWPPagesWebModule.Destroy;
@@ -93,35 +101,42 @@ end;
 
 function TWPPagesWebModule.View: string;
 var
-  post_filter, title, page_name: string;
+  post_filter, title, page_name, summary, logo_url: string;
+  logo_w, logo_h: integer;
   str: TStrings;
   i: integer;
 begin
+  PrepareModels;
   str := Explode(Application.Request.PathInfo, '/');
-  if str.Count < 3 then
-  begin
-    Result := H2(__(__Content_Not_Found), 'center');
+  try
+    if str.Count < 3 then
+    begin
+      Result := NotFoundContent;
+      Exit;
+    end;
+
+    str.Delete(0);
+    str.Delete(0);
+    page_name := str[str.Count - 1];
+
+    // post info; every name comes from the URL, so each one is quoted
+    post_filter := '';
+    for i := 0 to str.Count - 1 do
+    begin
+      if post_filter <> '' then
+        post_filter := post_filter + ',';
+      post_filter := post_filter + Posts.QuoteValue(str[i]);
+    end;
+  finally
     FreeAndNil(str);
-    Redirect(BaseURL);
-    Exit;
   end;
-
-  str.Delete(0);
-  str.Delete(0);
-  page_name := str[str.Count - 1];
-
-  // post info
-  post_filter := '';
-  for i := 1 to str.Count do
-    post_filter := post_filter + '''' + str[i - 1] + ''',';
-  post_filter := Copy(post_filter, 1, Length(post_filter) - 1);
   Posts.Find(['post_type IN (''page'',''attachment'')', 'post_name IN (' + post_filter + ')']);
   // post info - end
 
-  Pages.Find(['post_status="publish"', 'post_type="page"', 'post_name="' + page_name + '"']);
+  Pages.Find(['post_status="publish"', 'post_type="page"', 'post_name=' + Pages.QuoteValue(page_name)]);
   if Pages.RecordCount = 0 then
   begin
-    Result := H2(__(__Content_Not_Found), 'center');
+    Result := NotFoundContent;
     Exit;
   end;
 
@@ -129,13 +144,18 @@ begin
   ThemeUtil.AssignVar['$page'] := @Pages.Data;
   ThemeUtil.AssignVar['$posts'] := @Posts.Data;
 
-  // facebook content sharing
-  title := Pages.Data.FieldByName('post_title').AsString;
+  // share preview (WhatsApp, Facebook, X ...)
+  title := MetaText(Pages.Data.FieldByName('post_title').AsString, 0);
+  summary := MetaText(Pages.Data.FieldByName('post_content').AsString);
+  if summary <> '' then
+    ThemeUtil.AddMeta('description', summary, 'name');
   ThemeUtil.AddMeta('og:type', 'article', 'property');
   ThemeUtil.AddMeta('og:title', title, 'property');
-  ThemeUtil.AddMeta('og:site_name', AppData.sitename, 'property');
-  ThemeUtil.AddMeta('og:description', AppData.sitename + ', ' + title, 'property');
-  ThemeUtil.AddMeta('og:image', BaseURL + '/logo.png', 'property');
+  ThemeUtil.AddMeta('og:site_name', MetaText(WPOption('blogname'), 0), 'property');
+  if summary <> '' then
+    ThemeUtil.AddMeta('og:description', summary, 'property');
+  if WPSiteLogo(logo_url, logo_w, logo_h) then
+    ThemeUtil.AddMeta('og:image', MetaText(logo_url, 0), 'property');
 
   Result := ThemeUtil.RenderFromContent(@TagController, '', 'modules/pages/detail.html');
 end;
@@ -146,8 +166,7 @@ begin
 
 end;
 
-initialization
-  Route.Add( 'pages', TWPPagesWebModule);
+// route: see routes.pas
 
 {$endif wordpress}
 

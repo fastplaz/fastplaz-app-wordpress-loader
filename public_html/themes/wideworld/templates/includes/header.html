@@ -1,0 +1,57 @@
+<a class="skip-link" href="#content">[gt text=Skip to content]</a>
+
+<!-- baris 1: info (ikut tergulung) -->
+<div class="ww-topbar">
+  <div class="ww-wrap ww-topbar-inner">
+    <span class="ww-today">[text mod=wpnews func=today]</span>
+    <span class="ww-topbar-tagline">[text mod=wpnews func=getoption name=blogdescription]</span>
+    <!-- bahasa tampilan tema (menu, label, footer); isi berita tetap satu bahasa.
+         daftar bahasa: config.json "languages", bawaan ["id", "en"] -->
+    [text mod=wpnews func=langswitch class=ww-lang]
+  </div>
+</div>
+
+<!-- baris 2: utama, selalu menempel di atas -->
+<header id="masthead" class="ww-header" role="banner">
+  <div class="ww-wrap ww-header-inner">
+    <!-- logo & judul dari WordPress: Appearance > Customize > Site Identity;
+         tanpa logo di WordPress: public_html/logo-light.png (header gelap) -->
+    <a class="ww-brand" href="[$baseurl]" rel="home">
+      [text mod=wpnews func=sitelogo class=ww-logo variant=light]
+      <!-- layar lebar: judul situs WordPress; HP: config.json systems.sitename -->
+      <span class="ww-brand-title ww-brand-title--wide">[text mod=wpnews func=getoption name=blogname]</span>
+      <span class="ww-brand-title ww-brand-title--narrow">[sitename]</span>
+    </a>
+
+    <button type="button" class="ww-menu-toggle" aria-controls="ww-nav" aria-expanded="false" aria-label="[gt text=Menu]">
+      <span class="ww-menu-bar"></span>
+      <span class="ww-menu-bar"></span>
+      <span class="ww-menu-bar"></span>
+    </button>
+
+    <div id="ww-nav" class="ww-nav">
+      <nav aria-label="[gt text=Main menu]">
+        <ul class="ww-menu">
+          <li><a href="[$baseurl]">[gt text=Home]</a></li>
+          <li><a href="[$baseurl]news/">[gt text=News]</a></li>
+          [text mod=wpnews func=pagesmenu type=items]
+        </ul>
+      </nav>
+
+      <form role="search" method="get" class="ww-search" action="[$baseurl]">
+        <label class="screen-reader-text" for="ww-search-field">[gt text=Search news]</label>
+        <input type="search" id="ww-search-field" name="s" placeholder="[gt text=Search news]&hellip;" value="" />
+        <button type="submit" aria-label="[gt text=Search]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<!-- baris 3: kategori berita (ikut tergulung) -->
+<nav class="ww-catbar" aria-label="[gt text=News categories]">
+  <div class="ww-wrap">
+    [text mod=category func=categorylist class=ww-cats]
+  </div>
+</nav>

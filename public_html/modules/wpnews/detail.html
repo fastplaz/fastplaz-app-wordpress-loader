@@ -11,7 +11,7 @@
     <div class="entry-meta">
       <span class="entry-date">
         <span class="pull-left">
-        Dituliskan pada <time class="entry-date" datetime="2014-05-16T16:20:21+00:00">[$news.post_date dateformat=dd MMM YYYY]</time><!-- oleh <a href="#">[$news.display_name]</a>. -->
+        Dituliskan pada <time class="entry-date" datetime="[$news.post_date dateformat=YYYY-mm-dd]">[$news.post_date dateformat=dd MMM YYYY]</time><!-- oleh <a href="#">[$news.display_name]</a>. -->
         </span>
         <span class="pull-right" style="width:125px;display:none;">
             <div class="fb-like" data-href="[$baseurl][$news.post_date dateformat=YYYY]/[$news.post_date dateformat=mm]/[$news.post_name]/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
@@ -25,7 +25,7 @@
 
   <span class="clearfix"></span>
   <div class="entry-content">
-    <p>[$news.post_content filter=wpautop]</p>
+    [$news.post_content filter=wpautop]
   </div>
 
   <footer class="entry-meta">

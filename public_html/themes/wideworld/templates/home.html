@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="[lang]">
+<head>
+[include file="includes/head.html"]
+</head>
+<body class="ww-home">
+<div class="ww-site">
+
+[include file="includes/header.html"]
+
+<main id="content" class="ww-wrap ww-grid" role="main">
+  <h1 class="screen-reader-text">[text mod=wpnews func=getoption name=blogname]</h1>
+
+  <!-- kolom 1 + 2: berita utama -->
+  <div class="ww-main">
+    <!-- banner: dari config.json "hero_banner", kosong = tidak tampil; rasio lain: ratio=21:9 -->
+    [text mod=wpnews func=herobanner]
+    <div class="ww-main-hero">
+      [text mod=wpnews func=newshero belowbanner=1 excerpt=120]
+    </div>
+
+    <!-- newssection: judul = nama kategori dari WordPress; kategori yang kosong
+         atau tidak ada di database ini tidak tampil -->
+    [text mod=wpnews func=newssection category=cover-story number=4 excludelatest=1 thumb=1 summary=1 class=ww-list--feature]
+    [text mod=wpnews func=newssection category=kegiatan number=10 class=ww-list--dated]
+    [text mod=wpnews func=newssection category=tulisan number=6 class=ww-list--dated]
+    [text mod=wpnews func=newssection category=tips,tutorial number=6 class=ww-list--dated]
+  </div>
+
+  <!-- kolom 3 -->
+  <aside class="ww-col3" aria-label="[gt text=Categories and random reads]">
+    [include file="includes/col3.html"]
+  </aside>
+
+  <!-- kolom 4 -->
+  <aside class="ww-col4" aria-label="[gt text=Latest news and tags]">
+    [include file="includes/col4-home.html"]
+  </aside>
+</main>
+
+[include file="includes/footer.html"]
+
+</div>
+</body>
+</html>

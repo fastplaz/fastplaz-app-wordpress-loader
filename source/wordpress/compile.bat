@@ -1,5 +1,4 @@
 @echo off
-
-cd C:\lazarus-1.2.6\fpc\2.6.4\bin\i386-win32
-mkdir lib
-c:fpc wordpress.lpr @extra.cfg
+rem fpc must be in PATH, e.g. C:\lazarus\fpc\3.2.2\bin\x86_64-win64
+if not exist lib\x86_64-win64 mkdir lib\x86_64-win64
+fpc wordpress.lpr @extra.cfg -o..\..\public_html\wordpress.bin %1

@@ -1,6 +1,6 @@
 
 msgid "Home"
-msgstr ""
+msgstr "Beranda"
 
 msgid "Nothing Found"
 msgstr ""
@@ -31,3 +31,209 @@ msgstr "Tulisan Terakhir"
 
 msgid "Category"
 msgstr "Kategori"
+
+# wideworld theme: menu, labels, footer
+
+msgid "Skip to content"
+msgstr "Langsung ke konten"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Main menu"
+msgstr "Menu utama"
+
+msgid "News"
+msgstr "Berita"
+
+msgid "News categories"
+msgstr "Kategori berita"
+
+msgid "Search news"
+msgstr "Cari berita"
+
+msgid "Search"
+msgstr "Cari"
+
+msgid "Language"
+msgstr "Bahasa"
+
+msgid "Categories"
+msgstr "Kategori"
+
+msgid "Random reads"
+msgstr "Bacaan Acak"
+
+msgid "Latest News"
+msgstr "Berita Terbaru"
+
+msgid "Tags"
+msgstr "Tag"
+
+msgid "Pages"
+msgstr "Halaman"
+
+msgid "Powered by"
+msgstr "Didukung"
+
+msgid "Categories and random reads"
+msgstr "Kategori dan bacaan acak"
+
+msgid "Latest news and tags"
+msgstr "Berita terbaru dan tag"
+
+# news list, search, pagination
+
+msgid "No news yet."
+msgstr "Belum ada berita."
+
+msgid "Search results:"
+msgstr "Hasil pencarian:"
+
+msgid "1 story found"
+msgstr "1 berita ditemukan"
+
+msgid "%d stories found"
+msgstr "%d berita ditemukan"
+
+msgid "Page %d"
+msgstr "Halaman %d"
+
+msgid "Page %d of %d"
+msgstr "Halaman %d dari %d"
+
+msgid "No news matches %s. Try another keyword."
+msgstr "Tidak ada berita yang cocok dengan %s. Coba kata kunci lain."
+
+msgid "This page is empty."
+msgstr "Halaman ini kosong."
+
+msgid "Back to the first page"
+msgstr "Kembali ke halaman pertama"
+
+msgid "Read the full story"
+msgstr "Baca selengkapnya"
+
+msgid "Page navigation"
+msgstr "Navigasi halaman"
+
+msgid "Previous"
+msgstr "Sebelumnya"
+
+msgid "Next"
+msgstr "Berikutnya"
+
+# page not found
+
+msgid "Page not found"
+msgstr "Halaman tidak ditemukan"
+
+msgid "The address you opened does not exist, or the story has moved."
+msgstr "Alamat yang Anda buka tidak ada, atau beritanya sudah dipindahkan."
+
+msgid "See the latest news"
+msgstr "Lihat berita terbaru"
+
+# dates
+
+msgid "Sunday"
+msgstr "Minggu"
+
+msgid "Monday"
+msgstr "Senin"
+
+msgid "Tuesday"
+msgstr "Selasa"
+
+msgid "Wednesday"
+msgstr "Rabu"
+
+msgid "Thursday"
+msgstr "Kamis"
+
+msgid "Friday"
+msgstr "Jumat"
+
+msgid "Saturday"
+msgstr "Sabtu"
+
+msgid "January"
+msgstr "Januari"
+
+msgid "February"
+msgstr "Februari"
+
+msgid "March"
+msgstr "Maret"
+
+msgid "April"
+msgstr "April"
+
+msgid "May"
+msgstr "Mei"
+
+msgid "June"
+msgstr "Juni"
+
+msgid "July"
+msgstr "Juli"
+
+msgid "August"
+msgstr "Agustus"
+
+msgid "September"
+msgstr "September"
+
+msgid "October"
+msgstr "Oktober"
+
+msgid "November"
+msgstr "November"
+
+msgid "December"
+msgstr "Desember"
+
+msgid "Jan"
+msgstr "Jan"
+
+msgid "Feb"
+msgstr "Feb"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Apr"
+msgstr "Apr"
+
+msgid "Jun"
+msgstr "Jun"
+
+msgid "Jul"
+msgstr "Jul"
+
+msgid "Aug"
+msgstr "Agu"
+
+msgid "Sep"
+msgstr "Sep"
+
+msgid "Oct"
+msgstr "Okt"
+
+msgid "Nov"
+msgstr "Nov"
+
+msgid "Dec"
+msgstr "Des"
+
+msgid "Sitemap"
+msgstr "Peta situs"
+
+msgid "All pages, categories and news on this site."
+msgstr "Semua halaman, kategori, dan berita di situs ini."
+
+msgid "No news published yet."
+msgstr "Belum ada berita yang terbit."
+
+msgid "Search engines read the same list from"
+msgstr "Mesin pencari membaca daftar yang sama dari"
