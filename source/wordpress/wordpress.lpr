@@ -3,7 +3,8 @@ program wordpress;
 {$mode objfpc}{$H+}
 
 uses
-  fpcgi,
+  {$IFNDEF Windows}cthreads, {$ENDIF}
+  fastplaz_app,
   SysUtils,
   fastplaz_handler,
   common,
@@ -20,23 +21,33 @@ uses
   wordpress_category_controller,
   wordpress_tags_controller,
   wordpress_pages_controller,
-  wordpress_news_controller;
+  wordpress_news_controller, wordpress_sitemap_controller;
 
 {$R *.res}
 
 begin
-  Application.Title := 'FastPlaz for Wordpress';
-  Application.Email := Config.GetValue(_SYSTEM_WEBMASTER_EMAIL, 'webmaster@' + GetEnvironmentVariable('SERVER_NAME'));
-  Application.DefaultModuleName := Config.GetValue(_SYSTEM_MODULE_DEFAULT, 'main');
-  Application.ModuleVariable := Config.GetValue(_SYSTEM_MODULE_VARIABLE, 'mod');
+  // WordPress data is UTF-8. Without this, string fields are converted to the
+  // system ANSI code page (cp1252 on Windows): "–" becomes byte $96.
+  // Linux already defaults to UTF-8; this makes Windows behave the same.
+  DefaultSystemCodePage := CP_UTF8;
+
+  Application.Title := string( Config.GetValue(_SYSTEM_SITENAME, 'FastPlaz for Wordpress'));
+  Application.Email := string( Config.GetValue(_SYSTEM_WEBMASTER_EMAIL, 'webmaster@' + GetEnvironmentVariable('SERVER_NAME')));
+  Application.DefaultModuleName := string( Config.GetValue(_SYSTEM_MODULE_DEFAULT, 'main'));
+  Application.ModuleVariable := string( Config.GetValue(_SYSTEM_MODULE_VARIABLE, 'mod'));
   Application.AllowDefaultModule := True;
-  Application.RedirectOnErrorURL := Config.GetValue(_SYSTEM_ERROR_URL, '/');
+  Application.RedirectOnErrorURL := string( Config.GetValue(_SYSTEM_ERROR_URL, '/'));
   Application.RedirectOnError := Config.GetValue(_SYSTEM_ERROR_REDIRECT, False);
 
   Application.OnGetModule := @FastPlasAppandler.OnGetModule;
   Application.PreferModuleName := True;
+  {$if FPC_FULLVERSION >= 30004}
+  Application.LegacyRouting := True;
+  {$endif}
+
+  // startup banner, standalone mode only; see OnStandaloneBanner to change it
+  ShowStandaloneBanner;
 
   Application.Initialize;
   Application.Run;
 end.
-

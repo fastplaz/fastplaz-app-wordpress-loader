@@ -6,21 +6,21 @@ unit wordpress_tags_controller;
 interface
 
 uses
-  fpcgi, fastplaz_handler, httpdefs, fpHTTP,
+  fastplaz_app, fastplaz_handler, httpdefs, fpHTTP,
   Classes, SysUtils;
 
 type
 
   { TWPTagsWebModule }
 
-  TWPTagsWebModule = class(TMyCustomWebModule)
-    procedure RequestHandler(Sender: TObject; ARequest: TRequest;
-      AResponse: TResponse; var Handled: boolean);
+  TWPTagsWebModule = class(TMyCustomController)
   private
     function GetTagCloud(Parameter: TStrings): string;
   public
     constructor CreateNew(AOwner: TComponent; CreateMode: integer); override;
     destructor Destroy; override;
+
+    procedure Get; override;
     function View: string;
     procedure TagController(Sender: TObject; const TagString: string;
       TagParams: TStringList; Out ReplaceText: string);
@@ -37,14 +37,14 @@ uses database_lib, common, language_lib, html_lib, theme_controller,
 
 { TWPTagsWebModule }
 
-procedure TWPTagsWebModule.RequestHandler(Sender: TObject; ARequest: TRequest; AResponse: TResponse;
-  var Handled: boolean);
+// example:
+// http://domain/tag/the-slug/
+procedure TWPTagsWebModule.Get;
 begin
   DataBaseInit;
   LanguageInit;
 
   Response.Content := ThemeUtil.Render(@TagController, '', true);
-  Handled := True;
 end;
 
 function TWPTagsWebModule.GetTagCloud(Parameter: TStrings): string;
@@ -54,8 +54,9 @@ var
   url, title, style: string;
   number: integer;
 begin
+  Result := '';
   number := s2i(Parameter.Values['number']);
-  if number = 0 then
+  if (number <= 0) or (number > 200) then
     number := 50;
   tags_news := TWordpressTags.Create();
   tags_news.AddInnerJoin( 'term_taxonomy', 'term_id', 'terms.term_id', []);
@@ -73,11 +74,17 @@ begin
     Randomize;
     while not tags_news.Data.EOF do
     begin
-      url := BaseURL + 'tag/' + tags_news['slug'];
-      title := tags_news['name'];
-      style := 'font-size:' + i2s(7 + random(8)) + 'pt;';
-      lst.Add('<a href="' + url + '" title="' + title + '" style="' + style + '">' +
-        LowerCase(title) + '</a> ');
+      url := BaseURL + 'tag/' + string(tags_news['slug']) + '/';
+      title := string(tags_news['name']);
+      // style=none: no random font size, the theme styles the tags
+      if Parameter.Values['style'] = 'none' then
+        lst.Add('<a href="' + url + '">' + LowerCase(title) + '</a> ')
+      else
+      begin
+        style := 'font-size:' + i2s(7 + random(8)) + 'pt;';
+        lst.Add('<a href="' + url + '" title="' + title + '" style="' + style + '">' +
+          LowerCase(title) + '</a> ');
+      end;
       //style="font-size: 9.92660550459pt;">
 
       tags_news.Data.Next;
@@ -94,7 +101,6 @@ constructor TWPTagsWebModule.CreateNew(AOwner: TComponent; CreateMode: integer);
 begin
   inherited CreateNew(AOwner, CreateMode);
   CreateSession := True;
-  OnRequest := @RequestHandler;
   OnBlockController := @DoBlockController;
 end;
 
@@ -108,8 +114,14 @@ var
   url, tags_news: string;
   News: TWordpressNews;
 begin
-  tags_news := StringReplace(Application.Request.PathInfo, '/tag/', '', [rfReplaceAll]);
-  tags_news := StringReplace(tags_news, '/', '', [rfReplaceAll]);
+  // set by the route pattern (routes.pas); the path is the fallback
+  tags_news := _GET['tag'];
+  if tags_news = '' then
+  begin
+    tags_news := StringReplace(Application.Request.PathInfo, '/tags/', '', [rfReplaceAll]);
+    tags_news := StringReplace(tags_news, '/tag/', '', [rfReplaceAll]);
+    tags_news := StringReplace(tags_news, '/', '', [rfReplaceAll]);
+  end;
   if tags_news = '' then
   begin
     Result := 'Last Tags Lists';
@@ -119,20 +131,21 @@ begin
   News := TWordpressNews.Create();
   if not News.FindByTags(tags_news) then
   begin
-    Result := H2( format( __( __Tag_Content_Not_Found), [tags_news]));
+    // tags_news comes from the URL: encode it before it goes into the page
+    Result := H2( format( __( __Tag_Content_Not_Found), [HTMLEncode(tags_news)]));
     FreeAndNil(News);
     Exit;
   end;
 
   Result := '<div class="entry-content">'
-    + h2('Article for "'+tags_news+'"')
+    + h2('Article for "' + HTMLEncode(tags_news) + '"')
     + '<ul class="list recentposts-widget">';
   while not News.Data.EOF do
   begin
-    url := '/' + FormatDateTime('YYYY', News.Value['post_date']) +
-      '/' + FormatDateTime('mm', News.Value['post_date']) +
-      '/' + News.Value['post_name'];
-    Result := Result + '<li><a href="' + url + '">' + News.Value['post_title'] +
+    url := '/' + FormatDateTime('YYYY', TDateTime(News.Value['post_date'])) +
+      '/' + FormatDateTime('mm', TDateTime(News.Value['post_date'])) +
+      '/' + string(News.Value['post_name']) + '/';
+    Result := Result + '<li><a href="' + url + '">' + string(News.Value['post_title']) +
       '</a></li>';
     News.Data.Next;
   end;
@@ -176,10 +189,6 @@ begin
   end;
 end;
 
-{$ifdef wordpress}
-initialization
-  Route.Add( 'tag', TWPTagsWebModule);
-
-{$endif}
+// route: see routes.pas
 
 end.

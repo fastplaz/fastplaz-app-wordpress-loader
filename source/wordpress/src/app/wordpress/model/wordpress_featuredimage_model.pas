@@ -31,34 +31,43 @@ end;
 function TFeaturedimage.GetFeaturedImageURLByID(const NewsID: integer): string;
 var
   meta_value_string: string;
+  image_id: integer;
   wpnggallery: TWPNGGallery;
 begin
   Result := '';
   Find(['meta_key=''_thumbnail_id''', 'post_id=' + i2s(NewsID)]);
   if Data.RecordCount = 0 then
     Exit;
-  meta_value_string := Data.FieldValues['meta_value'];
+  meta_value_string := string(Data.FieldValues['meta_value']);
 
   // if nggallery
   if Pos('ngg-', meta_value_string) > 0 then
   begin
     meta_value_string := StringReplace(meta_value_string, 'ngg-', '', [rfReplaceAll]);
+    image_id := s2i(meta_value_string);
+    if image_id <= 0 then
+      Exit;
     wpnggallery := TWPNGGallery.Create();
-    wpnggallery.AddJoin('ngg_gallery', 'gid', 'galleryid', ['path']);
-    wpnggallery.FindFirst([AppData.tablePrefix + '_ngg_pictures.pid=' + meta_value_string],
+    wpnggallery.AddJoin('ngg_gallery', 'gid', 'ngg_pictures.galleryid', ['path']);
+    wpnggallery.FindFirst([AppData.tablePrefix + 'ngg_pictures.pid=' + i2s(image_id)],
       '', 'filename,alttext');
     if wpnggallery.Data.RecordCount > 0 then
-      Result := wpnggallery.Value['path'].AsString + '/' + wpnggallery.Value['filename'].AsString;
+      // the gallery path may end with "/": no "//" in the url
+      Result := StringReplace(string(wpnggallery.Value['path']) + '/' +
+        string(wpnggallery.Value['filename']), '//', '/', [rfReplaceAll]);
 
     FreeAndNil(wpnggallery);
     Exit;
   end;
   // if nggallery - end
 
-  Find(['meta_key=''_wp_attached_file''', 'post_id=' + meta_value_string]);
+  image_id := s2i(meta_value_string);
+  if image_id <= 0 then
+    Exit;
+  Find(['meta_key=''_wp_attached_file''', 'post_id=' + i2s(image_id)]);
   if Data.RecordCount = 0 then
     Exit;
-  Result := 'wp-content/uploads/' + Data.FieldValues['meta_value'];
+  Result := 'wp-content/uploads/' + string(Data.FieldValues['meta_value']);
 end;
 
 function TFeaturedimage.GetFeaturedImageURLByPermalink(const NewsID: integer): string;
