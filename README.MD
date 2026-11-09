@@ -2,8 +2,9 @@
 FastPlaz App - Wordpress Loader
 ===================================
 
-This app was build with FastPlaz framework,
-open source pascal web framework.
+This app was built with the FastPlaz framework, an open source Pascal web
+framework. It reads an existing WordPress database and serves the site with
+its own themes, without running PHP.
 
 REQUIREMENTS
 ------------
@@ -28,12 +29,39 @@ The FastPlaz library is expected in `../../../vendors/fastplaz` (relative to
 The binary is written to `public_html/wordpress.bin`. Opening
 `wordpress.lpi` in Lazarus works too.
 
+Other build scripts in `source/wordpress`:
+
+- `build-wsl.sh`: builds the Linux binary from WSL, compiling on the native
+  WSL filesystem because `/mnt/*` is slow.
+- `build-docker.sh project`: builds inside Docker (`luri/free-pascal`) so the
+  binary runs on hosting servers with an old glibc (cPanel/CloudLinux 8).
+
 
 INSTALLATION
 ------------
 
 - Extract this file to your webroot directory
-- configure file "config/config.json"
+- Copy `config/config-example.json` to `config/config.json` and fill in:
+  - `database/default`: the WordPress database, including the table `prefix`
+  - `systems/theme`: one of the folders in `public_html/themes`
+  - `wordpress`: `base_url` and `upload_url` of the original WordPress site,
+    and `plugins/polylang` if the site uses Polylang
+  - `hero_banner`, `right_top_banner`: optional banners (wideworld theme)
+
+
+URLS
+----
+
+| URL                          | Page                          |
+|------------------------------|-------------------------------|
+| `/`, `/id/`, `/en/`          | home page                     |
+| `/2014/04/the-post/`         | single post                   |
+| `/2014/04/`, `/news/`        | post archive                  |
+| `/category/slug/`            | category                      |
+| `/tag/slug/`                 | tag                           |
+| `/pages/parent/child/`       | WordPress page                |
+| `/sitemap.xml`               | sitemap for search engines    |
+| `/peta-situs/`               | sitemap page for visitors     |
 
 
 RUN MODES
@@ -61,3 +89,9 @@ proxy, keep `address` at `127.0.0.1`, set `systems/trust_proxy` to `true`,
 and do not let the proxy serve `config/` and `ztemp/`. See
 `docs/STANDALONE-deployment.md` in the FastPlaz repository.
 
+
+SITES USING THIS APP
+--------------------
+
+- Portal Pencak Silat Indonesia, https://silatindonesia.com
+- Perkumpulan Panahan Berkuda Indonesia (KPBI), https://ihasa.id
