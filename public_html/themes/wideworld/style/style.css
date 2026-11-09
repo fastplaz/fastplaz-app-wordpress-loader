@@ -690,6 +690,11 @@ body.lightbox-open { overflow: hidden; }
   .ww-menu-toggle { display: flex; }
   .ww-header-inner { gap: 12px; }
   .ww-brand-title { font-size: 1.05rem; }
+  /* kategori: area geser selebar layar, teks kategori pertama sejajar logo
+     (padding kiri = gutter dikurangi padding pill 14px) */
+  .ww-catbar .category-list { margin: 0 calc(-1 * var(--gutter)); }
+  .ww-cats { padding: 0 calc(var(--gutter) - 14px); }
+
   /* HP: nama pendek dari config.json (systems.sitename) */
   .ww-brand-title--wide { display: none; }
   .ww-brand-title--narrow { display: -webkit-box; }
