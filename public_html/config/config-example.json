@@ -46,6 +46,20 @@
       "fit": "contain"
     }
   ],
+  "right_top_banner":[
+    {
+      "image": "/logo.png",
+      "caption": "",
+      "url": "https://fastplaz.com",
+      "alt": ""
+    },
+    {
+      "image": "https://picsum.photos/300/300",
+      "caption": "Your Banner Here",
+      "url": "https://fastplaz.com",
+      "alt": ""
+    }
+  ],
   "database" : {
     "default" : {
       "hostname" : "localhost",

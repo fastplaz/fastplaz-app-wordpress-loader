@@ -43,6 +43,21 @@
     var carousels = document.querySelectorAll('.ww-carousel');
     for (var c = 0; c < carousels.length; c++) { initCarousel(carousels[c]); }
 
+    // banner kanan atas: gambar gagal dimuat -> banner itu dibuang;
+    // semua gagal -> bagiannya hilang
+    var bannerImgs = document.querySelectorAll('.ww-banners-top img');
+    var dropBanner = function (img) {
+      var item = img.closest('.ww-banner-item'), section = img.closest('.ww-banners-top');
+      if (item && item.parentNode) { item.parentNode.removeChild(item); }
+      if (section && section.parentNode && !section.querySelector('.ww-banner-item')) { section.parentNode.removeChild(section); }
+    };
+    for (var bi = 0; bi < bannerImgs.length; bi++) {
+      (function (img) {
+        if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) { dropBanner(img); return; }
+        img.addEventListener('error', function () { dropBanner(img); });
+      })(bannerImgs[bi]);
+    }
+
     if (!toggle || !nav) { return; }
 
     function setOpen(open) {

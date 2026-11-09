@@ -470,9 +470,18 @@ a.ww-carousel-link:focus-visible { outline-offset: -3px; }
 .tagcloud a:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
 .tagcloud a:active { background: var(--gold-ink); color: var(--on-brown); }
 
-.ww-banners { display: grid; gap: 16px; }
-.ww-banner { display: block; border-radius: var(--r-md); overflow: hidden; }
+.ww-banners { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.ww-banner { display: block; border-radius: var(--r-md); overflow: hidden; background: var(--bg-deep); color: var(--ink); text-decoration: none; }
 .ww-banner img { display: block; width: 100%; height: auto; }
+/* banner kanan atas (config.json "right_top_banner"): gambar dengan rasio
+   aslinya, keterangan di bawah gambar dengan garis emas seperti berita utama */
+.ww-banner-caption {
+  display: block; padding: 9px 12px 10px;
+  border-top: 3px solid var(--gold); background: var(--surface);
+  font-family: var(--font-head); font-weight: 600; font-size: .98rem; line-height: 1.3;
+}
+a.ww-banner:hover .ww-banner-caption { color: var(--gold-ink); text-decoration: underline; }
+a.ww-banner:hover img { opacity: .92; }
 
 /* ==========================================================================
    Isi halaman (artikel, daftar, pencarian, halaman, 404) di kolom 1+2

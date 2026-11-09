@@ -34,6 +34,8 @@ type
     function GetNewsHero(Parameter: TStrings): string;
     // [text mod=wpnews func=herobanner ratio=16:9]: image carousel from config.json "hero_banner"
     function GetHeroBanner(Parameter: TStrings): string;
+    // [text mod=wpnews func=rightbanner]: stacked banners from config.json "right_top_banner"
+    function GetRightBanner(Parameter: TStrings): string;
     procedure PrepareModels;
     function GetRandomNews(FunctionName: string = ''; Parameter: TStrings = nil): string;
     function GeneratePagesMenu(ParentMenu: integer; Parameter: TStrings = nil;
@@ -248,15 +250,15 @@ end;
 
 // example:
 // http://domain/2014/04/dialog-keajaiban-silat-silat-untuk-kehidupan/
-// config.json "hero_banner" as an array, nil when missing or not an array.
-// The caller frees the result.
-function HeroBannerData: TJSONArray;
+// a banner list in config.json ("hero_banner", "right_top_banner") as an
+// array, nil when missing or not an array. The caller frees the result.
+function BannerData(const KeyName: string): TJSONArray;
 var
   data: TJSONData;
 begin
   Result := nil;
   try
-    data := GetJSON(Config.GetString('hero_banner'));
+    data := GetJSON(Config.GetString(KeyName));
   except
     data := nil;
   end;
@@ -266,6 +268,21 @@ begin
     Result := TJSONArray(data)
   else
     data.Free;
+end;
+
+function HeroBannerData: TJSONArray;
+begin
+  Result := BannerData('hero_banner');
+end;
+
+// banner link: only web links (http, https, site-relative), '' otherwise
+// (javascript:, data:, ...)
+function SafeBannerURL(const URL: string): string;
+begin
+  Result := Trim(URL);
+  if (Result <> '') and not ((Pos('http://', LowerCase(Result)) = 1) or
+    (Pos('https://', LowerCase(Result)) = 1) or (Pos('/', Result) = 1)) then
+    Result := '';
 end;
 
 // True when at least one hero_banner item has an image
@@ -706,11 +723,7 @@ begin
       alt := Trim(string(item.Get('alt', '')));
       if alt = '' then
         alt := caption;
-      url := Trim(string(item.Get('url', '')));
-      // only web links; anything else (javascript:, data:) is dropped
-      if (url <> '') and not ((Pos('http://', LowerCase(url)) = 1) or
-        (Pos('https://', LowerCase(url)) = 1) or (Pos('/', url) = 1)) then
-        url := '';
+      url := SafeBannerURL(string(item.Get('url', '')));
 
       if url <> '' then
       begin
@@ -741,6 +754,62 @@ begin
       i2s(ratio_w) + ' / ' + i2s(ratio_h) + '">' +
       '<div class="ww-carousel-viewport"><ul class="ww-carousel-track">' +
       lst.Text + '</ul></div></section>';
+  finally
+    FreeAndNil(lst);
+    FreeAndNil(data);
+  end;
+end;
+
+// Banners stacked at the top of column 4, from config.json "right_top_banner":
+//   [{image, caption, url, alt}, ...]
+// Each image keeps its own ratio. alt falls back to caption. No usable item
+// -> empty string, so the column shows nothing.
+function TWPNewsWebModule.GetRightBanner(Parameter: TStrings): string;
+var
+  data: TJSONArray;
+  item: TJSONObject;
+  lst: TStringList;
+  i: integer;
+  image, caption, alt, url, tag_open, tag_close: string;
+begin
+  Result := '';
+  data := BannerData('right_top_banner');
+  if not Assigned(data) then
+    Exit;
+  lst := TStringList.Create;
+  try
+    for i := 0 to data.Count - 1 do
+    begin
+      if data.Items[i].JSONType <> jtObject then
+        Continue;
+      item := TJSONObject(data.Items[i]);
+      image := Trim(string(item.Get('image', '')));
+      if image = '' then
+        Continue;
+      caption := Trim(string(item.Get('caption', '')));
+      alt := Trim(string(item.Get('alt', '')));
+      if alt = '' then
+        alt := caption;
+      url := SafeBannerURL(string(item.Get('url', '')));
+      if url <> '' then
+      begin
+        tag_open := '<a class="ww-banner" href="' + HTMLEncode(url) + '">';
+        tag_close := '</a>';
+      end
+      else
+      begin
+        tag_open := '<div class="ww-banner">';
+        tag_close := '</div>';
+      end;
+      lst.Add('<li class="ww-banner-item">' + tag_open + '<img src="' + HTMLEncode(image) +
+        '" alt="' + HTMLEncode(alt) + '" decoding="async">' +
+        IfThen(caption <> '', '<span class="ww-banner-caption">' + HTMLEncode(caption) +
+        '</span>', '') + tag_close + '</li>');
+    end;
+    if lst.Count = 0 then
+      Exit;
+    Result := '<section class="ww-block ww-banners-top" aria-label="Banner">' +
+      '<ul class="ww-banners">' + lst.Text + '</ul></section>';
   finally
     FreeAndNil(lst);
     FreeAndNil(data);
@@ -1281,6 +1350,10 @@ begin
     'herobanner':
     begin
       ResponseString := GetHeroBanner(Parameter);
+    end;
+    'rightbanner':
+    begin
+      ResponseString := GetRightBanner(Parameter);
     end;
     // [text mod=wpnews func=today]: "Senin, 9 November 2026"; format=year: "2026"
     'today':
