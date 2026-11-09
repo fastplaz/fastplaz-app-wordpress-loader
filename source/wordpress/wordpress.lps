@@ -110,8 +110,8 @@
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="1136"/>
-        <CursorPos Y="1152"/>
+        <TopLine Value="952"/>
+        <CursorPos Y="968"/>
         <UsageCount Value="137"/>
         <Loaded Value="True"/>
       </Unit>
@@ -123,7 +123,7 @@
         <UsageCount Value="10"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="1">
+    <JumpHistory HistoryIndex="11">
       <Position>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <Caret Line="602" Column="23" TopLine="600"/>
@@ -131,6 +131,46 @@
       <Position>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <Caret Line="1156" TopLine="1136"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="1152" TopLine="1125"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="662" TopLine="648"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="37" Column="22" TopLine="24"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="754" Column="31" TopLine="695"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="1281" Column="26" TopLine="1270"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="1353" Column="14" TopLine="1331"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="35" Column="14" TopLine="23"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="659" Column="24" TopLine="649"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="667" Column="30" TopLine="649"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
+        <Caret Line="590" Column="25" TopLine="588"/>
       </Position>
     </JumpHistory>
     <RunParams>

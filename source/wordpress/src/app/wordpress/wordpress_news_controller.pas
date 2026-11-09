@@ -962,9 +962,9 @@ begin
         lst.Add('<a class="news-card-thumb" href="' + url + '" tabindex="-1" aria-hidden="true">' +
           thumb + '</a>');
         lst.Add('<div class="news-card-body">');
-        lst.Add('<time class="news-card-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) +
-          '">' + FormatNewsDate(post_date) + '</time>');
         lst.Add('<h2 class="news-card-title"><a href="' + url + '">' + title + '</a></h2>');
+        //lst.Add('<time class="news-card-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) +
+        //  '">' + FormatNewsDate(post_date) + '</time>');
         lst.Add('<p class="news-card-excerpt">' +
           NewsExcerpt(string(_News['post_excerpt']), string(_News['post_content']), Keyword) + '</p>');
         lst.Add('<a class="news-card-more" href="' + url + '">Baca selengkapnya</a>');
