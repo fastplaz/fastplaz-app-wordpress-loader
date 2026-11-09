@@ -1204,14 +1204,17 @@ begin
     begin
       ResponseString := GetOptions(Parameter.Values['name']);
     end;
-    // [text mod=wpnews func=sitelogo class=site-logo]: the logo set in
-    // WordPress (Appearance > Customize > Site Identity), '' when there is none
+    // [text mod=wpnews func=sitelogo class=site-logo variant=light]: the logo
+    // set in WordPress (Appearance > Customize > Site Identity), else
+    // public_html/logo.png, '' when there is none. variant=light: for a dark
+    // background, the fallback is logo-light.png when it exists
     'sitelogo':
     begin
       if Parameter.Values['class'] <> '' then
-        ResponseString := WPSiteLogoHTML(Parameter.Values['class'])
+        ResponseString := WPSiteLogoHTML(Parameter.Values['class'],
+          Parameter.Values['variant'] = 'light')
       else
-        ResponseString := WPSiteLogoHTML;
+        ResponseString := WPSiteLogoHTML('site-logo', Parameter.Values['variant'] = 'light');
     end;
     'newstitle':
     begin

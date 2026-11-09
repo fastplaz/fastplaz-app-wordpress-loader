@@ -5,7 +5,9 @@ unit wordpress_site_lib;
   Appearance > Customize > Site Identity), so the header and the share
   metadata follow the WordPress site instead of config.json:
   - blogname / blogdescription  : site title and tagline
-  - site_logo or theme_mods_*   : logo (attachment id)
+  - site_logo or theme_mods_*   : logo (attachment id); none set ->
+                                  logo.png next to the app binary (public_html/),
+                                  logo-light.png for dark backgrounds
   Plus the shared "page not found" content.
 }
 
@@ -21,9 +23,13 @@ function WPOption(const KeyName: string): string;
 // public url of a file under wp-content/uploads ("wp-content/uploads/2026/03/a.png")
 function WPUploadURL(const UploadPath: string): string;
 // url + size of the site logo, False when the site has no logo
-function WPSiteLogo(out URL: string; out Width, Height: integer): boolean;
+// (WordPress has none and there is no public_html/logo.png either)
+// Light: for a dark background, the fallback prefers public_html/logo-light.png
+// (a WordPress logo is used as it is)
+function WPSiteLogo(out URL: string; out Width, Height: integer;
+  Light: boolean = False): boolean;
 // <img> of the site logo, '' when the site has no logo
-function WPSiteLogoHTML(const CssClass: string = 'site-logo'): string;
+function WPSiteLogoHTML(const CssClass: string = 'site-logo'; Light: boolean = False): string;
 // text safe for a meta content="" attribute: no tags, no quotes, one line
 function MetaText(const Text: string; MaxLength: integer = 200): string;
 // sets the 404 status and returns the "page not found" content
@@ -36,6 +42,8 @@ uses fastplaz_app, fastplaz_handler, common, html_lib, RegExpr,
 
 const
   UPLOADS = 'wp-content/uploads/';
+  FALLBACK_LOGO = 'logo.png';   // in public_html/, beside the app binary
+  FALLBACK_LOGO_LIGHT = 'logo-light.png';   // same logo for dark backgrounds
 
 function WPOption(const KeyName: string): string;
 begin
@@ -103,7 +111,58 @@ begin
   Result := MatchInt('s:11:"custom_logo";i:(\d+);', mods);
 end;
 
-function WPSiteLogo(out URL: string; out Width, Height: integer): boolean;
+// width/height from a PNG header (IHDR), False when the file is not a PNG
+function PNGSize(const FileName: string; out Width, Height: integer): boolean;
+var
+  f: TFileStream;
+  b: array[0..23] of byte;
+begin
+  Result := False;
+  Width := 0;
+  Height := 0;
+  try
+    f := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    try
+      if f.Read(b, SizeOf(b)) <> SizeOf(b) then
+        Exit;
+    finally
+      f.Free;
+    end;
+  except
+    Exit;
+  end;
+  // signature 89 'PNG', then the IHDR chunk: width and height, big endian
+  if (b[0] <> $89) or (b[1] <> Ord('P')) or (b[2] <> Ord('N')) or (b[3] <> Ord('G')) then
+    Exit;
+  Width := (b[16] shl 24) or (b[17] shl 16) or (b[18] shl 8) or b[19];
+  Height := (b[20] shl 24) or (b[21] shl 16) or (b[22] shl 8) or b[23];
+  Result := True;
+end;
+
+// public_html/logo.png (Light: logo-light.png when it exists), used when
+// WordPress has no logo
+function FallbackLogo(out URL: string; out Width, Height: integer; Light: boolean): boolean;
+var
+  name, file_name, base_url: string;
+begin
+  URL := '';
+  Width := 0;
+  Height := 0;
+  name := FALLBACK_LOGO;
+  if Light and FileExists(ExtractFilePath(ParamStr(0)) + FALLBACK_LOGO_LIGHT) then
+    name := FALLBACK_LOGO_LIGHT;
+  file_name := ExtractFilePath(ParamStr(0)) + name;
+  if not FileExists(file_name) then
+    Exit(False);
+  PNGSize(file_name, Width, Height);
+  base_url := AppData.baseUrl;
+  if (base_url <> '') and (base_url[Length(base_url)] <> '/') then
+    base_url := base_url + '/';
+  URL := base_url + name;
+  Result := True;
+end;
+
+function WPSiteLogo(out URL: string; out Width, Height: integer; Light: boolean): boolean;
 var
   logo_id: integer;
   meta: string;
@@ -113,7 +172,7 @@ begin
   Height := 0;
   logo_id := SiteLogoID;
   if logo_id <= 0 then
-    Exit(False);
+    Exit(FallbackLogo(URL, Width, Height, Light));
 
   with TFeaturedimage.Create() do   // a postmeta model
   try
@@ -132,15 +191,18 @@ begin
     Free;
   end;
   Result := URL <> '';
+  // logo id points to a deleted attachment
+  if not Result then
+    Result := FallbackLogo(URL, Width, Height, Light);
 end;
 
-function WPSiteLogoHTML(const CssClass: string): string;
+function WPSiteLogoHTML(const CssClass: string; Light: boolean): string;
 var
   url, size: string;
   w, h: integer;
 begin
   Result := '';
-  if not WPSiteLogo(url, w, h) then
+  if not WPSiteLogo(url, w, h, Light) then
     Exit;
   size := '';
   if (w > 0) and (h > 0) then

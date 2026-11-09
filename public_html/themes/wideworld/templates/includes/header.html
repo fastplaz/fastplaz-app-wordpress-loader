@@ -11,10 +11,13 @@
 <!-- baris 2: utama, selalu menempel di atas -->
 <header id="masthead" class="ww-header" role="banner">
   <div class="ww-wrap ww-header-inner">
-    <!-- logo & judul dari WordPress: Appearance > Customize > Site Identity -->
+    <!-- logo & judul dari WordPress: Appearance > Customize > Site Identity;
+         tanpa logo di WordPress: public_html/logo-light.png (header gelap) -->
     <a class="ww-brand" href="[$baseurl]" rel="home">
-      [text mod=wpnews func=sitelogo class=ww-logo]
-      <span class="ww-brand-title">[text mod=wpnews func=getoption name=blogname]</span>
+      [text mod=wpnews func=sitelogo class=ww-logo variant=light]
+      <!-- layar lebar: judul situs WordPress; HP: config.json systems.sitename -->
+      <span class="ww-brand-title ww-brand-title--wide">[text mod=wpnews func=getoption name=blogname]</span>
+      <span class="ww-brand-title ww-brand-title--narrow">[sitename]</span>
     </a>
 
     <button type="button" class="ww-menu-toggle" aria-controls="ww-nav" aria-expanded="false" aria-label="Menu">
