@@ -24,6 +24,12 @@ type
     // home page / news list / search: cards (thumbnail, date, excerpt) + pagination
     function GetNewsCards(const Keyword: string = ''): string;
     function NewsImageURL(const NewsID: integer; const Content: string): string;
+    // term_taxonomy_id of a category slug, 0 when it does not exist
+    function CategoryTaxonomyID(const Slug: string): integer;
+    // [text mod=wpnews func=newslist category=slug number=6 thumb=1 summary=1]
+    function GetNewsList(Parameter: TStrings): string;
+    // [text mod=wpnews func=newshero category=slug]: the newest post, large
+    function GetNewsHero(Parameter: TStrings): string;
     procedure PrepareModels;
     function GetRandomNews(FunctionName: string = ''; Parameter: TStrings = nil): string;
     function GeneratePagesMenu(ParentMenu: integer; Parameter: TStrings = nil;
@@ -211,6 +217,28 @@ begin
       Exit(False);
 end;
 
+const
+  NEWS_DAYS: array[1..7] of string = ('Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis',
+    'Jumat', 'Sabtu');
+  NEWS_MONTHS_LONG: array[1..12] of string = ('Januari', 'Februari', 'Maret', 'April',
+    'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
+
+// "Senin, 9 November 2026"
+function FormatLongDate(const ADate: TDateTime): string;
+var
+  y, m, d: word;
+begin
+  DecodeDate(ADate, y, m, d);
+  Result := NEWS_DAYS[DayOfWeek(ADate)] + ', ' + IntToStr(d) + ' ' + NEWS_MONTHS_LONG[m] +
+    ' ' + IntToStr(y);
+end;
+
+function NewsURL(const PostDate: TDateTime; const PostName: string): string;
+begin
+  Result := '/' + FormatDateTime('YYYY', PostDate) + '/' + FormatDateTime('mm', PostDate) +
+    '/' + PostName + '/';
+end;
+
 { TWPNewsWebModule }
 
 // example:
@@ -371,6 +399,211 @@ begin
   if Result = '' then
     Exit(FirstImageURL(Content));
   Result := WPUploadURL(Result);
+end;
+
+function TWPNewsWebModule.CategoryTaxonomyID(const Slug: string): integer;
+begin
+  Result := 0;
+  if Slug = '' then
+    Exit;
+  with TWordpressTerms.Create() do
+  try
+    AddJoin('term_taxonomy', 'term_id', 'terms.term_id', ['taxonomy', 'term_taxonomy_id']);
+    FindFirst(['taxonomy="category"', 'slug=' + QuoteValue(Slug)], 'name');
+    if RecordCount > 0 then
+      Result := integer(Value['term_taxonomy_id']);
+  finally
+    Free;
+  end;
+end;
+
+function TWPNewsWebModule.GetNewsList(Parameter: TStrings): string;
+var
+  lst: TStringList;
+  _News: TWordpressNews;
+  number, offset, taxonomy_id, excerpt_len, latest_id, i, n: integer;
+  with_thumb, with_summary, cut: boolean;
+  skip_where, tax_ids: string;
+  slugs, seen: TStringList;
+  post_date: TDateTime;
+  url, image, list_class, excerpt: string;
+const
+  EMPTY_LIST = '<p class="ww-empty">Belum ada berita.</p>';
+begin
+  Result := '';
+  PrepareModels;
+  number := s2i(Parameter.Values['number']);
+  if (number <= 0) or (number > 30) then
+    number := 6;
+  offset := s2i(Parameter.Values['offset']);
+  if (offset < 0) or (offset > 100) then
+    offset := 0;
+  excerpt_len := s2i(Parameter.Values['excerpt']);
+  if (excerpt_len <= 0) or (excerpt_len > 300) then
+    excerpt_len := 110;
+  with_thumb := Parameter.Values['thumb'] = '1';
+  with_summary := Parameter.Values['summary'] = '1';
+  list_class := HTMLEncode(StringReplace(Parameter.Values['class'], '"', '', [rfReplaceAll]));
+
+  // excludelatest=1: leave out the newest post, it is already on the page (newshero)
+  skip_where := '';
+  if Parameter.Values['excludelatest'] = '1' then
+  begin
+    latest_id := 0;
+    with TWordpressNews.Create() do
+    try
+      FindFirst(['post_type="post"', 'post_status="publish"'], 'post_date desc', 'ID');
+      if RecordCount > 0 then
+        latest_id := integer(Value['ID']);
+    finally
+      Free;
+    end;
+    if latest_id > 0 then
+      skip_where := AppData.tablePrefix + 'posts.ID<>' + i2s(latest_id);
+  end;
+
+  // category=tips or category=tips,tutorial (several categories, no duplicates)
+  tax_ids := '';
+  if Parameter.Values['category'] <> '' then
+  begin
+    slugs := TStringList.Create;
+    try
+      slugs.CommaText := StringReplace(Parameter.Values['category'], ' ', '', [rfReplaceAll]);
+      for i := 0 to slugs.Count - 1 do
+      begin
+        taxonomy_id := CategoryTaxonomyID(slugs[i]);
+        if taxonomy_id > 0 then
+        begin
+          if tax_ids <> '' then
+            tax_ids := tax_ids + ',';
+          tax_ids := tax_ids + i2s(taxonomy_id);
+        end;
+      end;
+    finally
+      slugs.Free;
+    end;
+    if tax_ids = '' then
+      Exit(EMPTY_LIST);
+  end;
+
+  _News := TWordpressNews.Create();
+  lst := TStringList.Create;
+  seen := TStringList.Create;
+  try
+    if tax_ids = '' then
+      _News.Find(['post_type="post"', 'post_status="publish"', skip_where], 'post_date desc', number,
+        'ID,post_title,post_name,post_date,post_excerpt,post_content', offset)
+    else
+    begin
+      // a post in two of the categories comes twice: ask for more rows, skip repeats below
+      _News.AddJoin('term_relationships', 'object_id', 'posts.ID', ['object_id']);
+      _News.Find(['post_type="post"', 'post_status="publish"', AppData.tablePrefix +
+        'term_relationships.term_taxonomy_id IN (' + tax_ids + ')', skip_where], 'post_date desc',
+        number * 3, 'ID,post_title,post_name,post_date,post_excerpt,post_content', offset);
+    end;
+
+    if _News.RecordCount = 0 then
+      Exit(EMPTY_LIST);
+
+    lst.Add('<ul class="ww-list ' + list_class + '">');
+    n := 0;
+    while (not _News.Data.EOF) and (n < number) do
+    begin
+      if seen.IndexOf(string(_News['ID'])) >= 0 then
+      begin
+        _News.Data.Next;
+        Continue;
+      end;
+      seen.Add(string(_News['ID']));
+      Inc(n);
+      post_date := TDateTime(_News['post_date']);
+      url := NewsURL(post_date, string(_News['post_name']));
+      lst.Add('<li class="ww-item"><a class="ww-item-link" href="' + url + '">');
+      if with_thumb then
+      begin
+        image := NewsImageURL(integer(_News['ID']), string(_News['post_content']));
+        if image <> '' then
+          lst.Add('<span class="ww-thumb"><img src="' + HTMLEncode(image) +
+            '" alt="" loading="lazy" decoding="async"></span>')
+        else
+          lst.Add('<span class="ww-thumb ww-thumb--empty"></span>');
+      end;
+      lst.Add('<span class="ww-item-body">');
+      lst.Add('<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
+        FormatNewsDate(post_date) + '</time>');
+      lst.Add('<span class="ww-item-title">' + string(_News['post_title']) + '</span>');
+      if with_summary then
+      begin
+        excerpt := CutText(PlainText(string(_News['post_excerpt'])), excerpt_len, cut);
+        if excerpt = '' then
+          excerpt := CutText(PlainText(string(_News['post_content'])), excerpt_len, cut)
+        else
+          cut := cut or (Trim(string(_News['post_content'])) <> '');
+        if excerpt <> '' then
+        begin
+          if cut then
+            excerpt := excerpt + ' &hellip;';
+          lst.Add('<span class="ww-item-excerpt">' + excerpt + '</span>');
+        end;
+      end;
+      lst.Add('</span></a></li>');
+      _News.Data.Next;
+    end;
+    lst.Add('</ul>');
+    Result := lst.Text;
+  finally
+    FreeAndNil(seen);
+    FreeAndNil(lst);
+    FreeAndNil(_News);
+  end;
+end;
+
+function TWPNewsWebModule.GetNewsHero(Parameter: TStrings): string;
+var
+  _News: TWordpressNews;
+  taxonomy_id: integer;
+  post_date: TDateTime;
+  url, image: string;
+begin
+  Result := '';
+  PrepareModels;
+  taxonomy_id := CategoryTaxonomyID(Parameter.Values['category']);
+  _News := TWordpressNews.Create();
+  try
+    if taxonomy_id = 0 then
+      _News.Find(['post_type="post"', 'post_status="publish"'], 'post_date desc', 1,
+        'ID,post_title,post_name,post_date,post_excerpt,post_content')
+    else
+    begin
+      _News.AddJoin('term_relationships', 'object_id', 'posts.ID', ['object_id']);
+      _News.Find(['post_type="post"', 'post_status="publish"', AppData.tablePrefix +
+        'term_relationships.term_taxonomy_id=' + i2s(taxonomy_id)], 'post_date desc', 1,
+        'ID,post_title,post_name,post_date,post_excerpt,post_content');
+    end;
+    if _News.RecordCount = 0 then
+      Exit('<p class="ww-empty">Belum ada berita.</p>');
+
+    post_date := TDateTime(_News['post_date']);
+    url := NewsURL(post_date, string(_News['post_name']));
+    image := NewsImageURL(integer(_News['ID']), string(_News['post_content']));
+
+    Result := '<article class="ww-hero">';
+    if image <> '' then
+      // the largest image on the home page: load it first
+      Result := Result + '<a class="ww-hero-media" href="' + url +
+        '" tabindex="-1" aria-hidden="true"><img src="' + HTMLEncode(image) +
+        '" alt="" fetchpriority="high" decoding="async"></a>';
+    Result := Result + '<div class="ww-hero-body">' +
+      '<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
+      FormatNewsDate(post_date) + '</time>' +
+      '<h2 class="ww-hero-title"><a href="' + url + '">' + string(_News['post_title']) +
+      '</a></h2>' +
+      '<p class="ww-hero-excerpt">' +
+      NewsExcerpt(string(_News['post_excerpt']), string(_News['post_content'])) + '</p>' +
+      '</div></article>';
+  finally
+    FreeAndNil(_News);
+  end;
 end;
 
 function TWPNewsWebModule.Search(const Keyword: string): string;
@@ -618,8 +851,11 @@ function TWPNewsWebModule.GeneratePagesMenu(ParentMenu: integer; Parameter: TStr
 var
   whereSQL, html, title, submenu, url, page_item_has_children: string;
   nav_id, nav_class: string;
+  is_items, is_list: boolean;
 begin
   html := '';
+  is_items := Parameter.Values['type'] = 'items';
+  is_list := (Parameter.Values['type'] = 'nav') or is_items;
   whereSQL := '';
   nav_id := HTMLEncode(StringReplace(Parameter.Values['id'], '"', '', [rfReplaceAll]));
   nav_class := HTMLEncode(StringReplace(Parameter.Values['class'], '"', '', [rfReplaceAll]));
@@ -645,7 +881,9 @@ begin
         html := Parameter.Values['header'];
       if ((Parameter.Values['type'] = 'nav') and (ParentMenu = 0)) then
         html := html + '<nav>';
-      if Parameter.Values['type'] = 'nav' then
+      if is_items and IsParent then
+        // type=items: the theme writes the <ul> and its own first items
+      else if is_list then
       begin
         if IsParent then
         begin
@@ -667,7 +905,7 @@ begin
           page_item_has_children := ''
         else
           page_item_has_children := 'menu-item-has-children';
-        if Parameter.Values['type'] = 'nav' then
+        if is_list then
         begin
           if IsParent then
           begin
@@ -683,12 +921,12 @@ begin
         title := Value['post_title'];
         url := BaseURL + 'pages/' + ParentBaseURL + string(Value['post_name']);
         html := html + '<a href="' + url + '">' + title + '</a>' + submenu;
-        if Parameter.Values['type'] = 'nav' then
+        if is_list then
           html := html + '</li>';
         Data.Next;
       end;
       Parameter.Values['parent_baseurl'] := '';
-      if Parameter.Values['type'] = 'nav' then
+      if is_list and not (is_items and IsParent) then
         html := html + #13#10'</ul>';
       if ((Parameter.Values['type'] = 'nav') and (ParentMenu = 0)) then
         html := html + #13#10'</nav>';
@@ -887,6 +1125,22 @@ begin
     'lastnews':
     begin
       ResponseString := GetLastNews(FunctionName, Parameter);
+    end;
+    'newslist':
+    begin
+      ResponseString := GetNewsList(Parameter);
+    end;
+    'newshero':
+    begin
+      ResponseString := GetNewsHero(Parameter);
+    end;
+    // [text mod=wpnews func=today]: "Senin, 9 November 2026"; format=year: "2026"
+    'today':
+    begin
+      if Parameter.Values['format'] = 'year' then
+        ResponseString := FormatDateTime('YYYY', Now)
+      else
+        ResponseString := FormatLongDate(Now);
     end;
     'randomnews':
     begin

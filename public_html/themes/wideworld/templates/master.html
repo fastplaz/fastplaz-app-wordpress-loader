@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+[include file="includes/head.html"]
+</head>
+<body class="ww-page">
+<div class="ww-site">
+
+[include file="includes/header.html"]
+
+<div class="ww-wrap ww-grid">
+  <!-- kolom 1 + 2: isi halaman -->
+  <main id="content" class="ww-main ww-content" role="main">
+    [$maincontent]
+  </main>
+
+  <!-- kolom 3 -->
+  <aside class="ww-col3" aria-label="Kategori dan bacaan acak">
+    [include file="includes/col3.html"]
+  </aside>
+
+  <!-- kolom 4 -->
+  <aside class="ww-col4" aria-label="Berita terbaru dan tag">
+    [include file="includes/col4.html"]
+  </aside>
+</div>
+
+[include file="includes/footer.html"]
+
+</div>
+</body>
+</html>

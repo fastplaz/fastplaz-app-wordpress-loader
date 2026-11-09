@@ -76,9 +76,15 @@ begin
     begin
       url := BaseURL + 'tag/' + string(tags_news['slug']) + '/';
       title := string(tags_news['name']);
-      style := 'font-size:' + i2s(7 + random(8)) + 'pt;';
-      lst.Add('<a href="' + url + '" title="' + title + '" style="' + style + '">' +
-        LowerCase(title) + '</a> ');
+      // style=none: no random font size, the theme styles the tags
+      if Parameter.Values['style'] = 'none' then
+        lst.Add('<a href="' + url + '">' + LowerCase(title) + '</a> ')
+      else
+      begin
+        style := 'font-size:' + i2s(7 + random(8)) + 'pt;';
+        lst.Add('<a href="' + url + '" title="' + title + '" style="' + style + '">' +
+          LowerCase(title) + '</a> ');
+      end;
       //style="font-size: 9.92660550459pt;">
 
       tags_news.Data.Next;

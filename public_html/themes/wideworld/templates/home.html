@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+[include file="includes/head.html"]
+</head>
+<body class="ww-home">
+<div class="ww-site">
+
+[include file="includes/header.html"]
+
+<main id="content" class="ww-wrap ww-grid" role="main">
+  <h1 class="screen-reader-text">[text mod=wpnews func=getoption name=blogname]</h1>
+
+  <!-- kolom 1 + 2: berita utama -->
+  <div class="ww-main">
+    <div class="ww-main-hero">
+      [text mod=wpnews func=newshero]
+    </div>
+
+    <section class="ww-block" aria-labelledby="ww-h-cover">
+      <h2 class="ww-section-title" id="ww-h-cover"><a href="[$baseurl]category/cover-story/">Cover Story</a></h2>
+      [text mod=wpnews func=newslist category=cover-story number=4 excludelatest=1 thumb=1 summary=1 class=ww-list--feature]
+    </section>
+
+    <section class="ww-block" aria-labelledby="ww-h-kegiatan">
+      <h2 class="ww-section-title" id="ww-h-kegiatan"><a href="[$baseurl]category/kegiatan/">Kegiatan</a></h2>
+      [text mod=wpnews func=newslist category=kegiatan number=10 class=ww-list--dated]
+    </section>
+
+    <section class="ww-block" aria-labelledby="ww-h-tulisan">
+      <h2 class="ww-section-title" id="ww-h-tulisan"><a href="[$baseurl]category/tulisan/">Tulisan</a></h2>
+      [text mod=wpnews func=newslist category=tulisan number=6 class=ww-list--dated]
+    </section>
+
+    <section class="ww-block" aria-labelledby="ww-h-tips">
+      <h2 class="ww-section-title" id="ww-h-tips"><a href="[$baseurl]category/tips/">Tips</a> &amp; <a href="[$baseurl]category/tutorial/">Tutorial</a></h2>
+      [text mod=wpnews func=newslist category=tips,tutorial number=6 class=ww-list--dated]
+    </section>
+  </div>
+
+  <!-- kolom 3 -->
+  <aside class="ww-col3" aria-label="Kategori dan bacaan acak">
+    [include file="includes/col3.html"]
+  </aside>
+
+  <!-- kolom 4 -->
+  <aside class="ww-col4" aria-label="Berita terbaru dan tag">
+    [include file="includes/col4-home.html"]
+  </aside>
+</main>
+
+[include file="includes/footer.html"]
+
+</div>
+</body>
+</html>

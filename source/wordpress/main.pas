@@ -78,7 +78,11 @@ begin
   begin
     Tags['$maincontent'] := @Tag_MainContent_Handler; //<<-- tag $maincontent handler
 
-    ThemeUtil.Layout := 'master'; // try with 'home'
+    // the first page uses the theme's home layout; ?page=2.. the news list
+    if s2i(_GET['page']) <= 1 then
+      ThemeUtil.Layout := 'home'
+    else
+      ThemeUtil.Layout := 'master';
     Response.Content := ThemeUtil.Render;
   end;
 end;
