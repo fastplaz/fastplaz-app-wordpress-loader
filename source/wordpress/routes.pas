@@ -10,11 +10,12 @@ uses
 
 implementation
 
-uses info_controller, main
+uses main
   {$ifdef wordpress}
   , wordpress_news_controller, wordpress_category_controller,
   wordpress_pages_controller, wordpress_tags_controller
   {$endif}
+  , wordpress_sitemap_controller
   ;
 
 {
@@ -29,7 +30,8 @@ uses info_controller, main
 }
 initialization
   Route.Add('main', '^/((?P<lang>id|en|us)/?)?$', TMainModule, 'GET');
-  Route.Add('info', '^/info/?$', TInfoModule, 'GET');
+  Route[ '^/sitemap\.xml$'] := TSitemapController;
+  //Route.Add('info', '^/info/?$', TInfoModule, 'GET');
 
   {$ifdef wordpress}
   // /2014/04/the-permalink/

@@ -22,3 +22,4 @@ Disallow: /mo2json.php
 Disallow: /upgrade.php
 Disallow: /user.php
 
+Sitemap: http://wp.fastplaz.test/sitemap.xml

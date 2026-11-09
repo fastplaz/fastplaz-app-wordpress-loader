@@ -21,7 +21,7 @@ uses
   wordpress_category_controller,
   wordpress_tags_controller,
   wordpress_pages_controller,
-  wordpress_news_controller;
+  wordpress_news_controller, wordpress_sitemap_controller;
 
 {$R *.res}
 

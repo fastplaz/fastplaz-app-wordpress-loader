@@ -17,6 +17,9 @@ ErrorDocument 500 500.html
     Deny from all
 </FilesMatch>
 
+# sitemap: a file name, so it must skip the trailing slash rule below
+RewriteRule ^sitemap\.xml$ wordpress.bin/sitemap.xml [QSA,L]
+
 # add trailing slash
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)([^/])$ /$1$2/ [L,R=301]

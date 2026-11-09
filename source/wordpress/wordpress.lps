@@ -16,10 +16,10 @@
       <Unit>
         <Filename Value="routes.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="23"/>
-        <CursorPos Y="17"/>
+        <EditorIndex Value="2"/>
+        <CursorPos X="56" Y="16"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="main.pas"/>
@@ -109,10 +109,18 @@
       <Unit>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="952"/>
-        <CursorPos Y="968"/>
+        <CursorPos X="47" Y="17"/>
         <UsageCount Value="137"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\app\wordpress\wordpress_sitemap_controller.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="25"/>
+        <CursorPos Y="38"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -123,7 +131,7 @@
         <UsageCount Value="10"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="11">
+    <JumpHistory HistoryIndex="13">
       <Position>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <Caret Line="602" Column="23" TopLine="600"/>
@@ -171,6 +179,14 @@
       <Position>
         <Filename Value="src\app\wordpress\wordpress_news_controller.pas"/>
         <Caret Line="590" Column="25" TopLine="588"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_sitemap_controller.pas"/>
+        <Caret Line="70" TopLine="44"/>
+      </Position>
+      <Position>
+        <Filename Value="src\app\wordpress\wordpress_sitemap_controller.pas"/>
+        <Caret Line="30" TopLine="25"/>
       </Position>
     </JumpHistory>
     <RunParams>
