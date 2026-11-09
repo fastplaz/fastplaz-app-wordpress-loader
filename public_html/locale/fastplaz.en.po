@@ -225,3 +225,15 @@ msgstr ""
 
 msgid "Dec"
 msgstr ""
+
+msgid "Sitemap"
+msgstr ""
+
+msgid "All pages, categories and news on this site."
+msgstr ""
+
+msgid "No news published yet."
+msgstr ""
+
+msgid "Search engines read the same list from"
+msgstr ""

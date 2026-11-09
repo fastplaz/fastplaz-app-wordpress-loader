@@ -31,6 +31,8 @@ uses main
 initialization
   Route.Add('main', '^/((?P<lang>id|en|us)/?)?$', TMainModule, 'GET');
   Route[ '^/sitemap\.xml$'] := TSitemapController;
+  // the same list for people, inside the theme
+  Route.Add('sitemappage', '^/peta-situs/?$', TSitemapPageController, 'GET');
   //Route.Add('info', '^/info/?$', TInfoModule, 'GET');
 
   {$ifdef wordpress}

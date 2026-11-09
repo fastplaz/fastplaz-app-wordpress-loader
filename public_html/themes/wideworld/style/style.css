@@ -649,6 +649,52 @@ figure { margin: 1.4em 0; }
 .not-found .feed-search { margin: 20px 0 16px; }
 .not-found-home a { color: var(--gold-ink); font-weight: 700; }
 
+/* peta situs (/peta-situs/): daftar baca, bukan kartu. Judul bagian memakai
+   motif sasaran yang sama dengan kolom samping; berita dikelompokkan per
+   bulan karena pembaca mencari "berita kapan", bukan urutan acak */
+.sitemap-group { margin-top: 36px; }
+.sitemap-group .ww-section-title { font-size: 1.3rem; }
+.sitemap-count {
+  margin-left: auto; font-family: var(--font-body); font-weight: 500;
+  font-size: .9rem; color: var(--ink-soft);
+}
+.sitemap-list { list-style: none; margin: 0; padding: 0; }
+.sitemap-list li {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding: 9px 0; border-bottom: 1px solid var(--line);
+}
+.sitemap-list a { text-decoration: none; }
+.sitemap-list a:hover { text-decoration: underline; }
+.sitemap-list time {
+  flex: 0 0 auto; font-size: .88rem; color: var(--ink-soft);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+/* sub-halaman menjorok sesuai kedalamannya */
+.sitemap-depth-1 { padding-left: 22px !important; }
+.sitemap-depth-2 { padding-left: 44px !important; }
+.sitemap-depth-3, .sitemap-depth-4 { padding-left: 66px !important; }
+.sitemap-month {
+  margin: 26px 0 2px; font-size: 1.05rem; color: var(--gold-ink);
+}
+.sitemap-terms {
+  list-style: none; margin: 0; padding: 0;
+  columns: 2 220px; column-gap: 32px;
+}
+.sitemap-terms li { break-inside: avoid; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.sitemap-terms a { text-decoration: none; }
+.sitemap-terms a:hover { text-decoration: underline; }
+.sitemap-terms .sitemap-count { margin-left: 4px; font-size: .85rem; }
+.sitemap-xml { margin: 36px 0 0; font-size: .92rem; color: var(--ink-soft); }
+.sitemap-xml a { color: var(--gold-ink); }
+@media (max-width: 560px) {
+  .sitemap-list li { flex-direction: column; gap: 2px; }
+}
+@media (pointer: coarse) {
+  .sitemap-list a, .sitemap-terms a { display: inline-block; min-height: 44px; padding-top: 10px; }
+  .sitemap-list li, .sitemap-terms li { padding: 0; }
+  .sitemap-list time { padding-bottom: 8px; }
+}
+
 /* ==========================================================================
    Lightbox (gambar di isi artikel)
    ========================================================================== */

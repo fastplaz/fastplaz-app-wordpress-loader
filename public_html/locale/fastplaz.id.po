@@ -225,3 +225,15 @@ msgstr "Nov"
 
 msgid "Dec"
 msgstr "Des"
+
+msgid "Sitemap"
+msgstr "Peta situs"
+
+msgid "All pages, categories and news on this site."
+msgstr "Semua halaman, kategori, dan berita di situs ini."
+
+msgid "No news published yet."
+msgstr "Belum ada berita yang terbit."
+
+msgid "Search engines read the same list from"
+msgstr "Mesin pencari membaca daftar yang sama dari"

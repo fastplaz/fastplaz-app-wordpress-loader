@@ -62,6 +62,11 @@ type
 
   end;
 
+// "9 Nov 2026" / "9 Agu 2026", in the current language
+function FormatNewsDate(const ADate: TDateTime): string;
+// "November 2026", in the current language
+function FormatMonthYear(const AYear, AMonth: word): string;
+
 
 implementation
 
@@ -246,6 +251,14 @@ begin
   DecodeDate(ADate, y, m, d);
   Result := __(NEWS_DAYS[DayOfWeek(ADate)]) + ', ' + IntToStr(d) + ' ' +
     __(NEWS_MONTHS_LONG[m]) + ' ' + IntToStr(y);
+end;
+
+function FormatMonthYear(const AYear, AMonth: word): string;
+begin
+  Result := '';
+  if (AMonth < 1) or (AMonth > 12) then
+    Exit;
+  Result := __(NEWS_MONTHS_LONG[AMonth]) + ' ' + IntToStr(AYear);
 end;
 
 function NewsURL(const PostDate: TDateTime; const PostName: string): string;
@@ -1326,6 +1339,9 @@ begin
         try
           if (str.Count>=2) then
           begin
+            if str[1] = 'peta-situs' then
+              ResponseString := ' - ' + __('Sitemap')
+            else
             if str[1] = 'pages' then
             begin
               pageName := str[str.Count - 1];
