@@ -39,6 +39,7 @@
       })(thumbs[t]);
     }
 
+    initToTop();
     initLightbox();
     var carousels = document.querySelectorAll('.ww-carousel');
     for (var c = 0; c < carousels.length; c++) { initCarousel(carousels[c]); }
@@ -87,6 +88,33 @@
     var onChange = function (e) { if (e.matches) { setOpen(false); } };
     if (mq.addEventListener) { mq.addEventListener('change', onChange); } else if (mq.addListener) { mq.addListener(onChange); }
   });
+
+  /* ------------------------------------------------------------------------
+     Tombol "kembali ke atas" di kanan bawah.
+     - dibuat lewat JS: tanpa JS tidak ada tombol yang tidak berfungsi
+     - muncul setelah halaman digulir lebih dari satu layar
+     - gulir halus, langsung lompat bila "kurangi gerak" aktif
+     - fokus keyboard dipindah ke logo/judul di header setelah sampai atas
+     ------------------------------------------------------------------------ */
+  function initToTop() {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ww-totop';
+    btn.setAttribute('aria-label', 'Kembali ke atas');
+    btn.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 12.5 10 7l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    document.body.appendChild(btn);
+
+    var update = function () { btn.classList.toggle('is-visible', window.scrollY > window.innerHeight); };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+
+    btn.addEventListener('click', function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      var home = document.querySelector('.ww-brand');
+      if (home) { home.focus({ preventScroll: true }); }
+    });
+  }
 
   /* ------------------------------------------------------------------------
      Banner carousel (markup dari [text mod=wpnews func=herobanner]).

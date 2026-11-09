@@ -1,19 +1,34 @@
 <footer id="colophon" class="ww-footer" role="contentinfo">
   <div class="ww-wrap ww-footer-inner">
+    <!-- identitas: logo & judul dari WordPress (Site Identity) -->
     <div class="ww-footer-brand">
-      <a class="ww-footer-title" href="[$baseurl]">[text mod=wpnews func=getoption name=blogname]</a>
+      <a class="ww-footer-home" href="[$baseurl]" rel="home">
+        [text mod=wpnews func=sitelogo class=ww-footer-logo variant=light]
+        <span class="ww-footer-title">[text mod=wpnews func=getoption name=blogname]</span>
+      </a>
       <p class="ww-footer-tagline">[text mod=wpnews func=getoption name=blogdescription]</p>
     </div>
-    <nav class="ww-footer-nav" aria-label="Menu bawah">
-      <ul>
+
+    <!-- halaman: Beranda, Berita, lalu semua page WordPress (sub-page menjorok) -->
+    <nav class="ww-footer-col ww-footer-pages" aria-labelledby="ww-f-halaman">
+      <h2 class="ww-footer-heading" id="ww-f-halaman">Halaman</h2>
+      <ul class="ww-footer-list">
         <li><a href="[$baseurl]">Beranda</a></li>
         <li><a href="[$baseurl]news/">Berita</a></li>
         [text mod=wpnews func=pagesmenu type=items]
       </ul>
     </nav>
+
+    <nav class="ww-footer-col ww-footer-cats" aria-labelledby="ww-f-kategori">
+      <h2 class="ww-footer-heading" id="ww-f-kategori">Kategori</h2>
+      [text mod=category func=categorylist class=ww-footer-list]
+    </nav>
   </div>
-  <div class="ww-wrap ww-footer-bottom">
-    <span>&copy; [text mod=wpnews func=today format=year] [text mod=wpnews func=getoption name=blogname]</span>
-    <span>Didukung <a href="http://www.fastplaz.com/" target="_blank" rel="noopener">FastPlaz</a></span>
+
+  <div class="ww-footer-bottom">
+    <div class="ww-wrap ww-footer-bottom-inner">
+      <span>&copy; [text mod=wpnews func=today format=year] [text mod=wpnews func=getoption name=blogname]</span>
+      <span>Didukung <a href="http://www.fastplaz.com/" target="_blank" rel="noopener">FastPlaz</a></span>
+    </div>
   </div>
 </footer>
