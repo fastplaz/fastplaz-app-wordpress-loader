@@ -28,7 +28,8 @@ type
     function CategoryTaxonomyID(const Slug: string): integer;
     // [text mod=wpnews func=newslist category=slug number=6 thumb=1 summary=1]
     function GetNewsList(Parameter: TStrings): string;
-    // [text mod=wpnews func=newshero category=slug belowbanner=1]: the newest post, large;
+    // [text mod=wpnews func=newshero category=slug belowbanner=1 excerpt=420]: the newest
+    // post, large; excerpt: characters of the story shown (default 420);
     // belowbanner=1: a herobanner is above it, so it does not take the image priority
     // while the banner has images
     function GetNewsHero(Parameter: TStrings): string;
@@ -73,6 +74,7 @@ const
   NEWS_PER_PAGE = 9;        // cards per page; page 1 shows one extra (hero)
   NEWS_MAX_PAGE = 10000;
   NEWS_EXCERPT_LENGTH = 180;
+  NEWS_HERO_EXCERPT_LENGTH = 420;   // newshero: a longer part of the story
   NEWS_MONTHS: array[1..12] of string = ('Jan', 'Feb', 'Mar', 'Apr', 'Mei',
     'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des');
 
@@ -172,12 +174,16 @@ end;
 
 // plain text excerpt. With a keyword: the part of the content around the
 // first match, with the matches highlighted.
-function NewsExcerpt(const Excerpt, Content: string; const Keyword: string = ''): string;
+// MaxLength: characters of plain text, 0 = NEWS_EXCERPT_LENGTH
+function NewsExcerpt(const Excerpt, Content: string; const Keyword: string = '';
+  MaxLength: integer = 0): string;
 var
   s: string;
   p, start: integer;
   cut: boolean;
 begin
+  if MaxLength <= 0 then
+    MaxLength := NEWS_EXCERPT_LENGTH;
   if Keyword <> '' then
   begin
     s := PlainText(Content);
@@ -194,7 +200,7 @@ begin
           Inc(start);
         Inc(start);
       end;
-      Result := CutText(Copy(s, start, MaxInt), NEWS_EXCERPT_LENGTH, cut);
+      Result := CutText(Copy(s, start, MaxInt), MaxLength, cut);
       Result := HighlightKeyword(Result, Keyword);
       if start > 1 then
         Result := '&hellip; ' + Result;
@@ -207,7 +213,7 @@ begin
   s := Excerpt;
   if Trim(StripTags(s)) = '' then
     s := Content;
-  Result := CutText(PlainText(s), NEWS_EXCERPT_LENGTH, cut);
+  Result := CutText(PlainText(s), MaxLength, cut);
   if Keyword <> '' then
     Result := HighlightKeyword(Result, Keyword);
   if cut then
@@ -591,9 +597,9 @@ begin
           lst.Add('<span class="ww-thumb ww-thumb--empty"></span>');
       end;
       lst.Add('<span class="ww-item-body">');
-      lst.Add('<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
-        FormatNewsDate(post_date) + '</time>');
       lst.Add('<span class="ww-item-title">' + string(_News['post_title']) + '</span>');
+      //lst.Add('<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
+      //  FormatNewsDate(post_date) + '</time>');
       if with_summary then
       begin
         excerpt := CutText(PlainText(string(_News['post_excerpt'])), excerpt_len, cut);
@@ -657,13 +663,14 @@ begin
         '" tabindex="-1" aria-hidden="true"><img src="' + HTMLEncode(image) + '" alt=""' +
         IfThen((Parameter.Values['belowbanner'] = '1') and HasHeroBanner, '',
         ' fetchpriority="high"') + ' decoding="async"></a>';
-    Result := Result + '<div class="ww-hero-body">' +
-      '<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
-      FormatNewsDate(post_date) + '</time>' +
+    Result := Result + '<div class="ww-hero-body"><div class="ww-hero-head">' +
+      //'<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
+      //FormatNewsDate(post_date) + '</time>' +
       '<h2 class="ww-hero-title"><a href="' + url + '">' + string(_News['post_title']) +
-      '</a></h2>' +
+      '</a></h2></div>' +
       '<p class="ww-hero-excerpt">' +
-      NewsExcerpt(string(_News['post_excerpt']), string(_News['post_content'])) + '</p>' +
+      NewsExcerpt(string(_News['post_excerpt']), string(_News['post_content']), '',
+      StrToIntDef(Parameter.Values['excerpt'], NEWS_HERO_EXCERPT_LENGTH)) + '</p>' +
       '</div></article>';
   finally
     FreeAndNil(_News);

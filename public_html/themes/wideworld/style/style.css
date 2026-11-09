@@ -358,31 +358,33 @@ a.ww-carousel-link:focus-visible { outline-offset: -3px; }
 .ww-section-title a:hover { color: var(--gold-ink); text-decoration: underline; }
 .ww-empty { color: var(--ink-soft); font-style: italic; margin: 0; }
 
-/* ---------- berita utama ---------- */
-.ww-hero { position: relative; }
+/* ---------- berita utama ----------
+   Gambar di kiri (sepertiga lebar, agak tegak), di kanan judul lalu
+   cuplikan isi berita yang lebih panjang. Garis emas di bawah judul
+   memisahkan judul dari isi. Tanpa gambar: isi selebar penuh. */
+.ww-hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 28px; align-items: start;
+  padding: 20px; background: var(--surface);
+  border-radius: var(--r-md); box-shadow: var(--shadow-card);
+}
+.ww-hero:not(:has(.ww-hero-media)) { grid-template-columns: minmax(0, 1fr); }
 .ww-hero-media {
   position: relative;
-  display: block; aspect-ratio: 16 / 9; overflow: hidden;
-  border-radius: var(--r-md); background: var(--bg-deep);
+  display: block; aspect-ratio: 5 / 6; overflow: hidden;
+  border-radius: var(--r-sm); background: var(--bg-deep);
 }
-.ww-hero-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.ww-hero-body {
-  position: relative;
-  margin: -64px 32px 0;
-  padding: 24px 30px 26px;
-  background: var(--surface);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-card);
-}
-.ww-hero-media + .ww-hero-body { border-top: 4px solid var(--gold); }
+.ww-hero-media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.ww-hero-media:hover img { transform: scale(1.03); }
+.ww-hero-body { min-width: 0; padding-top: 4px; }
+.ww-hero-head { padding-bottom: 14px; margin-bottom: 16px; border-bottom: 2px solid var(--gold); }
 .ww-hero-title {
-  margin: 6px 0 10px;
-  font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
-  line-height: 1.15;
+  margin: 6px 0 0;
+  line-height: 1.18;
 }
 .ww-hero-title a { color: var(--ink); text-decoration: none; }
 .ww-hero-title a:hover { color: var(--gold-ink); text-decoration: underline; text-decoration-thickness: 3px; }
-.ww-hero-excerpt { margin: 0; color: var(--ink-soft); font-size: 1.02rem; }
+.ww-hero-excerpt { margin: 0; color: var(--ink); font-size: 1.02rem; line-height: 1.7; }
 
 .ww-date {
   display: block;
@@ -789,7 +791,6 @@ body.lightbox-open { overflow: hidden; }
   .ww-hero-media { border-radius: var(--r-md); }
   .ww-carousel-viewport { border-radius: var(--r-md); }
   .ww-carousel-caption { padding: 8px 14px 9px; font-size: .95rem; }
-  .ww-hero-body { margin: -36px 12px 0; padding: 18px 18px 20px; }
 
   .ww-content { padding: 22px 18px 28px; border-radius: var(--r-md); }
   .ww-footer-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 24px; padding-top: 40px; padding-bottom: 32px; }
@@ -797,6 +798,8 @@ body.lightbox-open { overflow: hidden; }
 }
 
 @media (max-width: 599px) {
+  .ww-hero { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 14px; }
+  .ww-hero-media { aspect-ratio: 16 / 9; }
   .ww-totop { right: 16px; bottom: 16px; }
   .ww-topbar-tagline { display: none; }
   .ww-footer-inner { grid-template-columns: minmax(0, 1fr); }
@@ -812,5 +815,6 @@ body.lightbox-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .ww-carousel-dot:active::before { transform: none; }
-  .ww-item-link:hover .ww-thumb img, .news-card:hover .news-card-thumb img { transform: none; }
+  .ww-item-link:hover .ww-thumb img, .news-card:hover .news-card-thumb img,
+  .ww-hero-media:hover img { transform: none; }
 }
