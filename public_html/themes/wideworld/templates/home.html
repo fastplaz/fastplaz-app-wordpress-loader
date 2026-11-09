@@ -19,25 +19,12 @@
       [text mod=wpnews func=newshero belowbanner=1 excerpt=120]
     </div>
 
-    <section class="ww-block" aria-labelledby="ww-h-cover">
-      <h2 class="ww-section-title" id="ww-h-cover"><a href="[$baseurl]category/cover-story/">Cover Story</a></h2>
-      [text mod=wpnews func=newslist category=cover-story number=4 excludelatest=1 thumb=1 summary=1 class=ww-list--feature]
-    </section>
-
-    <section class="ww-block" aria-labelledby="ww-h-kegiatan">
-      <h2 class="ww-section-title" id="ww-h-kegiatan"><a href="[$baseurl]category/kegiatan/">Kegiatan</a></h2>
-      [text mod=wpnews func=newslist category=kegiatan number=10 class=ww-list--dated]
-    </section>
-
-    <section class="ww-block" aria-labelledby="ww-h-tulisan">
-      <h2 class="ww-section-title" id="ww-h-tulisan"><a href="[$baseurl]category/tulisan/">Tulisan</a></h2>
-      [text mod=wpnews func=newslist category=tulisan number=6 class=ww-list--dated]
-    </section>
-
-    <section class="ww-block" aria-labelledby="ww-h-tips">
-      <h2 class="ww-section-title" id="ww-h-tips"><a href="[$baseurl]category/tips/">Tips</a> &amp; <a href="[$baseurl]category/tutorial/">Tutorial</a></h2>
-      [text mod=wpnews func=newslist category=tips,tutorial number=6 class=ww-list--dated]
-    </section>
+    <!-- newssection: judul = nama kategori dari WordPress; kategori yang kosong
+         atau tidak ada di database ini tidak tampil -->
+    [text mod=wpnews func=newssection category=cover-story number=4 excludelatest=1 thumb=1 summary=1 class=ww-list--feature]
+    [text mod=wpnews func=newssection category=kegiatan number=10 class=ww-list--dated]
+    [text mod=wpnews func=newssection category=tulisan number=6 class=ww-list--dated]
+    [text mod=wpnews func=newssection category=tips,tutorial number=6 class=ww-list--dated]
   </div>
 
   <!-- kolom 3 -->

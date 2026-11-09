@@ -27,7 +27,12 @@ type
     // term_taxonomy_id of a category slug, 0 when it does not exist
     function CategoryTaxonomyID(const Slug: string): integer;
     // [text mod=wpnews func=newslist category=slug number=6 thumb=1 summary=1]
+    // hideempty=1: '' instead of the "No news yet." line
     function GetNewsList(Parameter: TStrings): string;
+    // [text mod=wpnews func=newssection category=tips,tutorial number=6 class=...]:
+    // <section> with a heading (the category names, linked) and the newslist;
+    // '' when the categories have no posts or do not exist in this database
+    function GetNewsSection(Parameter: TStrings): string;
     // [text mod=wpnews func=newshero category=slug belowbanner=1 excerpt=420]: the newest
     // post, large; excerpt: characters of the story shown (default 420);
     // belowbanner=1: a herobanner is above it, so it does not take the image priority
@@ -509,10 +514,13 @@ var
   skip_where, tax_ids: string;
   slugs, seen: TStringList;
   post_date: TDateTime;
-  url, image, list_class, excerpt: string;
+  url, image, list_class, excerpt, empty_text: string;
 begin
   Result := '';
   PrepareModels;
+  empty_text := '<p class="ww-empty">' + __('No news yet.') + '</p>';
+  if Parameter.Values['hideempty'] = '1' then
+    empty_text := '';
   number := s2i(Parameter.Values['number']);
   if (number <= 0) or (number > 30) then
     number := 6;
@@ -564,7 +572,7 @@ begin
       slugs.Free;
     end;
     if tax_ids = '' then
-      Exit('<p class="ww-empty">' + __('No news yet.') + '</p>');
+      Exit(empty_text);
   end;
 
   _News := TWordpressNews.Create();
@@ -584,7 +592,7 @@ begin
     end;
 
     if _News.RecordCount = 0 then
-      Exit('<p class="ww-empty">' + __('No news yet.') + '</p>');
+      Exit(empty_text);
 
     lst.Add('<ul class="ww-list ' + list_class + '">');
     n := 0;
@@ -637,6 +645,53 @@ begin
     FreeAndNil(lst);
     FreeAndNil(_News);
   end;
+end;
+
+function TWPNewsWebModule.GetNewsSection(Parameter: TStrings): string;
+var
+  slugs: TStringList;
+  i: integer;
+  list, heading, first_slug: string;
+begin
+  Result := '';
+  Parameter.Values['hideempty'] := '1';
+  list := GetNewsList(Parameter);
+  if list = '' then
+    Exit;
+
+  // heading: the names as WordPress has them, only categories that have posts
+  heading := '';
+  first_slug := '';
+  slugs := TStringList.Create;
+  try
+    slugs.CommaText := StringReplace(Parameter.Values['category'], ' ', '', [rfReplaceAll]);
+    for i := 0 to slugs.Count - 1 do
+      with TWordpressTerms.Create() do
+      try
+        AddJoin('term_taxonomy', 'term_id', 'terms.term_id', ['taxonomy']);
+        FindFirst(['taxonomy="category"', AppData.tablePrefix + 'term_taxonomy.count>0',
+          'slug=' + QuoteValue(slugs[i])], 'name', 'name,slug');
+        if RecordCount > 0 then
+        begin
+          if heading <> '' then
+            heading := heading + ' &amp; ';
+          heading := heading + '<a href="' + BaseURL + 'category/' + string(Value['slug']) +
+            '/">' + string(Value['name']) + '</a>';
+          if first_slug = '' then
+            first_slug := string(Value['slug']);
+        end;
+      finally
+        Free;
+      end;
+  finally
+    slugs.Free;
+  end;
+
+  if heading = '' then // no category= : the latest news
+    Exit('<section class="ww-block">' + list + '</section>');
+  Result := '<section class="ww-block" aria-labelledby="ww-h-' + first_slug + '">' +
+    '<h2 class="ww-section-title" id="ww-h-' + first_slug + '">' + heading + '</h2>' +
+    list + '</section>';
 end;
 
 function TWPNewsWebModule.GetNewsHero(Parameter: TStrings): string;
@@ -1370,6 +1425,10 @@ begin
     'newslist':
     begin
       ResponseString := GetNewsList(Parameter);
+    end;
+    'newssection':
+    begin
+      ResponseString := GetNewsSection(Parameter);
     end;
     'newshero':
     begin

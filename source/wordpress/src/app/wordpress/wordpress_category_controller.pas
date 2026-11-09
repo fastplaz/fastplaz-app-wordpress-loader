@@ -65,8 +65,9 @@ begin
   div_class := HTMLEncode(StringReplace(Parameter.Values['class'], '"', '', [rfReplaceAll]));
   Terms := TWordpressTerms.Create();
   try
+    // only categories that have published posts (WordPress keeps that in count)
     Terms.AddJoin( 'term_taxonomy', 'term_id', 'terms.term_id', ['taxonomy']);
-    Terms.Find(['taxonomy="category"'], 'name');
+    Terms.Find(['taxonomy="category"', AppData.tablePrefix + 'term_taxonomy.count>0'], 'name');
     if Terms.RecordCount > 0 then
     begin
       lst := TStringList.Create;
