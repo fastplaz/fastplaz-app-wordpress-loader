@@ -25,6 +25,27 @@
       "db_idle_timeout" : 300
     }
   },
+  "hero_banner":[
+    {
+      "image": "https://picsum.photos/1280/720",
+      "caption": "",
+      "url": "",
+      "alt": "Contoh banner tanpa keterangan"
+    },
+    {
+      "image": "https://picsum.photos/1280/720",
+      "caption": "Welcome To FastPlaz",
+      "url": "https://fastplaz.com",
+      "alt": ""
+    },
+    {
+      "image": "https://picsum.photos/800/1000",
+      "caption": "Poster portrait, tampil utuh",
+      "url": "",
+      "alt": "Contoh poster portrait",
+      "fit": "contain"
+    }
+  ],
   "database" : {
     "default" : {
       "hostname" : "localhost",

@@ -13,8 +13,10 @@
 
   <!-- kolom 1 + 2: berita utama -->
   <div class="ww-main">
+    <!-- banner: dari config.json "hero_banner", kosong = tidak tampil; rasio lain: ratio=21:9 -->
+    [text mod=wpnews func=herobanner]
     <div class="ww-main-hero">
-      [text mod=wpnews func=newshero]
+      [text mod=wpnews func=newshero belowbanner=1]
     </div>
 
     <section class="ww-block" aria-labelledby="ww-h-cover">

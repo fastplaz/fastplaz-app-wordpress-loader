@@ -28,8 +28,12 @@ type
     function CategoryTaxonomyID(const Slug: string): integer;
     // [text mod=wpnews func=newslist category=slug number=6 thumb=1 summary=1]
     function GetNewsList(Parameter: TStrings): string;
-    // [text mod=wpnews func=newshero category=slug]: the newest post, large
+    // [text mod=wpnews func=newshero category=slug belowbanner=1]: the newest post, large;
+    // belowbanner=1: a herobanner is above it, so it does not take the image priority
+    // while the banner has images
     function GetNewsHero(Parameter: TStrings): string;
+    // [text mod=wpnews func=herobanner ratio=16:9]: image carousel from config.json "hero_banner"
+    function GetHeroBanner(Parameter: TStrings): string;
     procedure PrepareModels;
     function GetRandomNews(FunctionName: string = ''; Parameter: TStrings = nil): string;
     function GeneratePagesMenu(ParentMenu: integer; Parameter: TStrings = nil;
@@ -59,6 +63,7 @@ type
 implementation
 
 uses database_lib, common, language_lib, html_lib, theme_controller, RegExpr,
+  fpjson, jsonparser, strutils,
   wordpress_options_model, wordpress_nggallery_model, wordpress_pages_model,
   wordpress_category_controller, wordpress_site_lib;
 
@@ -243,6 +248,46 @@ end;
 
 // example:
 // http://domain/2014/04/dialog-keajaiban-silat-silat-untuk-kehidupan/
+// config.json "hero_banner" as an array, nil when missing or not an array.
+// The caller frees the result.
+function HeroBannerData: TJSONArray;
+var
+  data: TJSONData;
+begin
+  Result := nil;
+  try
+    data := GetJSON(Config.GetString('hero_banner'));
+  except
+    data := nil;
+  end;
+  if not Assigned(data) then
+    Exit;
+  if data.JSONType = jtArray then
+    Result := TJSONArray(data)
+  else
+    data.Free;
+end;
+
+// True when at least one hero_banner item has an image
+function HasHeroBanner: boolean;
+var
+  items: TJSONArray;
+  i: integer;
+begin
+  Result := False;
+  items := HeroBannerData;
+  if not Assigned(items) then
+    Exit;
+  try
+    for i := 0 to items.Count - 1 do
+      if (items.Items[i].JSONType = jtObject) and
+        (Trim(string(TJSONObject(items.Items[i]).Get('image', ''))) <> '') then
+        Exit(True);
+  finally
+    items.Free;
+  end;
+end;
+
 procedure TWPNewsWebModule.Get;
 begin
   DataBaseInit;
@@ -589,10 +634,12 @@ begin
 
     Result := '<article class="ww-hero">';
     if image <> '' then
-      // the largest image on the home page: load it first
+      // the largest image on the home page: load it first, unless the
+      // template says a hero banner sits above it and the banner has images
       Result := Result + '<a class="ww-hero-media" href="' + url +
-        '" tabindex="-1" aria-hidden="true"><img src="' + HTMLEncode(image) +
-        '" alt="" fetchpriority="high" decoding="async"></a>';
+        '" tabindex="-1" aria-hidden="true"><img src="' + HTMLEncode(image) + '" alt=""' +
+        IfThen((Parameter.Values['belowbanner'] = '1') and HasHeroBanner, '',
+        ' fetchpriority="high"') + ' decoding="async"></a>';
     Result := Result + '<div class="ww-hero-body">' +
       '<time class="ww-date" datetime="' + FormatDateTime('YYYY-mm-dd', post_date) + '">' +
       FormatNewsDate(post_date) + '</time>' +
@@ -603,6 +650,100 @@ begin
       '</div></article>';
   finally
     FreeAndNil(_News);
+  end;
+end;
+
+// Banner carousel from config.json "hero_banner":
+//   [{image, caption, url, alt, fit}, ...]
+// alt: image description (falls back to caption); fit: "contain" shows the
+// whole image (portrait posters), default fills the frame cropped from the center.
+// Optional: ratio=21:9 (default 16:9). No usable item -> empty string, so the
+// template shows nothing. Rotation, controls and swipe live in js/main.js.
+function TWPNewsWebModule.GetHeroBanner(Parameter: TStrings): string;
+var
+  data: TJSONArray;
+  item: TJSONObject;
+  lst: TStringList;
+  i, count, ratio_w, ratio_h: integer;
+  image, caption, alt, url, ratio, tag_open, tag_close: string;
+begin
+  Result := '';
+  data := HeroBannerData;
+  if not Assigned(data) then
+    Exit;
+  lst := TStringList.Create;
+  try
+
+    // ratio=W:H, only digits accepted
+    ratio_w := 16;
+    ratio_h := 9;
+    if Assigned(Parameter) then
+    begin
+      ratio := Trim(Parameter.Values['ratio']);
+      i := Pos(':', ratio);
+      if i > 0 then
+      begin
+        ratio_w := StrToIntDef(Copy(ratio, 1, i - 1), 0);
+        ratio_h := StrToIntDef(Copy(ratio, i + 1, MaxInt), 0);
+        if (ratio_w <= 0) or (ratio_h <= 0) then
+        begin
+          ratio_w := 16;
+          ratio_h := 9;
+        end;
+      end;
+    end;
+
+    count := 0;
+    for i := 0 to data.Count - 1 do
+    begin
+      if data.Items[i].JSONType <> jtObject then
+        Continue;
+      item := TJSONObject(data.Items[i]);
+      image := Trim(string(item.Get('image', '')));
+      if image = '' then
+        Continue;
+      caption := Trim(string(item.Get('caption', '')));
+      alt := Trim(string(item.Get('alt', '')));
+      if alt = '' then
+        alt := caption;
+      url := Trim(string(item.Get('url', '')));
+      // only web links; anything else (javascript:, data:) is dropped
+      if (url <> '') and not ((Pos('http://', LowerCase(url)) = 1) or
+        (Pos('https://', LowerCase(url)) = 1) or (Pos('/', url) = 1)) then
+        url := '';
+
+      if url <> '' then
+      begin
+        tag_open := '<a class="ww-carousel-link" href="' + HTMLEncode(url) + '">';
+        tag_close := '</a>';
+      end
+      else
+      begin
+        tag_open := '<div class="ww-carousel-link">';
+        tag_close := '</div>';
+      end;
+
+      lst.Add('<li class="ww-carousel-slide" data-index="' + i2s(count) + '">' +
+        tag_open + '<span class="ww-carousel-frame' +
+        IfThen(LowerCase(Trim(string(item.Get('fit', '')))) = 'contain', ' is-contain', '') +
+        '"><img src="' + HTMLEncode(image) +
+        '" alt="' + HTMLEncode(alt) + '" decoding="async"' +
+        IfThen(count = 0, ' fetchpriority="high"', '') + '></span>' +
+        IfThen(caption <> '', '<span class="ww-carousel-caption">' +
+        HTMLEncode(caption) + '</span>', '') + tag_close + '</li>');
+      Inc(count);
+    end;
+    if count = 0 then
+      Exit;
+
+    Result := '<section class="ww-carousel' + IfThen(count = 1, ' is-single', '') +
+      '" aria-roledescription="carousel" aria-label="Banner" style="--ww-carousel-ratio: ' +
+      i2s(ratio_w) + ' / ' + i2s(ratio_h) + '">' +
+      '<div class="ww-carousel-viewport"><ul class="ww-carousel-track">' +
+      lst.Text + '</ul></div></section>';
+  finally
+    FreeAndNil(lst);
+    FreeAndNil(data);
   end;
 end;
 
@@ -1133,6 +1274,10 @@ begin
     'newshero':
     begin
       ResponseString := GetNewsHero(Parameter);
+    end;
+    'herobanner':
+    begin
+      ResponseString := GetHeroBanner(Parameter);
     end;
     // [text mod=wpnews func=today]: "Senin, 9 November 2026"; format=year: "2026"
     'today':

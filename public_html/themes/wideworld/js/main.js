@@ -40,6 +40,8 @@
     }
 
     initLightbox();
+    var carousels = document.querySelectorAll('.ww-carousel');
+    for (var c = 0; c < carousels.length; c++) { initCarousel(carousels[c]); }
 
     if (!toggle || !nav) { return; }
 
@@ -70,6 +72,126 @@
     var onChange = function (e) { if (e.matches) { setOpen(false); } };
     if (mq.addEventListener) { mq.addEventListener('change', onChange); } else if (mq.addListener) { mq.addListener(onChange); }
   });
+
+  /* ------------------------------------------------------------------------
+     Banner carousel (markup dari [text mod=wpnews func=herobanner]).
+     - kontrol hanya titik; berputar tiap 6 detik
+     - berhenti sementara saat kursor di atasnya, saat ada fokus keyboard di
+       dalamnya, atau saat tab tidak terlihat
+     - berhenti seterusnya begitu pengunjung memilih slide sendiri (klik
+       titik, panah keyboard, geser): pengganti tombol jeda
+     - "kurangi gerak" aktif -> tidak berputar sendiri
+     - gambar yang gagal dimuat -> slide dibuang; semua gagal -> banner hilang
+     ------------------------------------------------------------------------ */
+  function initCarousel(root) {
+    // didefinisikan di sini, bukan di level atas: ready() bisa memanggil
+    // initCarousel sebelum baris-baris di bawah IIFE dieksekusi
+    var CAROUSEL_DELAY = 6000;
+
+    var track = root.querySelector('.ww-carousel-track');
+    var viewport = root.querySelector('.ww-carousel-viewport');
+    if (!track || !viewport) { return; }
+    var slides = [], current = 0, timer = null;
+    var stopped = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var hovering = false, focused = false;
+
+    var dots = document.createElement('ul');
+    dots.className = 'ww-carousel-dots';
+    root.appendChild(dots);
+
+    function rebuild() {
+      slides = Array.prototype.slice.call(track.querySelectorAll('.ww-carousel-slide'));
+      if (!slides.length) { stop(); if (root.parentNode) { root.parentNode.removeChild(root); } return; }
+      if (current >= slides.length) { current = 0; }
+      var multi = slides.length > 1;
+      dots.hidden = !multi;
+      root.classList.toggle('is-single', !multi);
+      dots.innerHTML = '';
+      slides.forEach(function (slide, i) {
+        slide.setAttribute('role', 'group');
+        slide.setAttribute('aria-roledescription', 'slide');
+        slide.setAttribute('aria-label', (i + 1) + ' dari ' + slides.length);
+        var li = document.createElement('li');
+        li.innerHTML = '<button type="button" class="ww-carousel-dot" aria-label="Banner ' + (i + 1) + '"></button>';
+        li.firstChild.addEventListener('click', function () { choose(i); });
+        dots.appendChild(li);
+      });
+      go(current);
+      refresh();
+    }
+
+    function go(index) {
+      if (!slides.length) { return; }
+      current = (index + slides.length) % slides.length;
+      track.style.transform = 'translateX(' + (-100 * current) + '%)';
+      slides.forEach(function (slide, i) {
+        var active = i === current;
+        slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        // slide tersembunyi tidak bisa difokus dengan Tab
+        if (active) { slide.removeAttribute('inert'); } else { slide.setAttribute('inert', ''); }
+        var link = slide.querySelector('a');
+        if (link) { link.tabIndex = active ? 0 : -1; }
+      });
+      var dotBtns = dots.querySelectorAll('.ww-carousel-dot');
+      for (var d = 0; d < dotBtns.length; d++) {
+        dotBtns[d].setAttribute('aria-current', d === current ? 'true' : 'false');
+      }
+    }
+
+    // pilihan pengunjung: tampilkan slide itu dan hentikan putaran otomatis
+    function choose(index) { stopped = true; go(index); refresh(); }
+
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    // putar hanya bila tidak ada alasan untuk diam
+    function refresh() {
+      var running = slides.length > 1 && !stopped && !hovering && !focused && !document.hidden;
+      stop();
+      if (running) { timer = setInterval(function () { go(current + 1); }, CAROUSEL_DELAY); }
+      // pembaca layar diberi tahu pergantian slide hanya saat tidak berputar sendiri
+      viewport.setAttribute('aria-live', running ? 'off' : 'polite');
+    }
+
+    root.addEventListener('mouseenter', function () { hovering = true; refresh(); });
+    root.addEventListener('mouseleave', function () { hovering = false; refresh(); });
+    root.addEventListener('focusin', function () { focused = true; refresh(); });
+    root.addEventListener('focusout', function (e) {
+      if (!root.contains(e.relatedTarget)) { focused = false; refresh(); }
+    });
+    document.addEventListener('visibilitychange', refresh);
+
+    root.addEventListener('keydown', function (e) {
+      if (slides.length < 2) { return; }
+      var to = e.key === 'ArrowLeft' ? current - 1 : e.key === 'ArrowRight' ? current + 1 : null;
+      if (to === null) { return; }
+      choose(to);
+      // fokus ikut ke titik slide yang baru bila sedang di deretan titik
+      if (dots.contains(document.activeElement)) { dots.querySelectorAll('.ww-carousel-dot')[current].focus(); }
+    });
+
+    // geser kiri/kanan di layar sentuh
+    var startX = 0, startY = 0;
+    viewport.addEventListener('touchstart', function (e) {
+      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    }, { passive: true });
+    viewport.addEventListener('touchend', function (e) {
+      if (slides.length < 2) { return; }
+      var dx = e.changedTouches[0].clientX - startX, dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { choose(current + (dx < 0 ? 1 : -1)); }
+    }, { passive: true });
+
+    // gambar rusak: buang slidenya
+    Array.prototype.forEach.call(track.querySelectorAll('img'), function (img) {
+      var drop = function () {
+        var slide = img.closest('.ww-carousel-slide');
+        if (slide && slide.parentNode) { slide.parentNode.removeChild(slide); rebuild(); }
+      };
+      if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) { drop(); }
+      else { img.addEventListener('error', drop); }
+    });
+
+    if (root.parentNode) { rebuild(); }
+  }
 
   /* ------------------------------------------------------------------------
      Lightbox: gambar di isi artikel dibuka sebagai popup saat diketuk.

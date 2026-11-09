@@ -280,6 +280,61 @@ button, [role="button"], label[for], summary { cursor: pointer; }
 }
 .ww-main-hero { grid-column: 1 / -1; margin-bottom: 16px; }
 
+/* ---------- banner carousel (config.json "hero_banner") ----------
+   Gambar mengisi lebar bingkai, rasio dari --ww-carousel-ratio (16:9),
+   dipotong dari tengah. Keterangan di pita coklat solid di bawah gambar
+   (bukan gradasi): kontras teks tidak bergantung pada warna foto, dan slide
+   tanpa keterangan tetap sama tinggi. Kontrol di luar gambar. */
+.ww-carousel { grid-column: 1 / -1; margin-bottom: 28px; }
+.ww-carousel-viewport { overflow: hidden; border-radius: var(--r-lg); background: var(--bg-deep); }
+.ww-carousel-track {
+  display: flex; margin: 0; padding: 0; list-style: none;
+  transition: transform .5s cubic-bezier(.4, 0, .2, 1);
+}
+.ww-carousel-slide { flex: 0 0 100%; min-width: 0; }
+.ww-carousel-link { position: relative; display: block; color: var(--on-brown); text-decoration: none; }
+.ww-carousel-frame {
+  display: block; aspect-ratio: var(--ww-carousel-ratio, 16 / 9); overflow: hidden;
+  background: var(--bg-deep);
+}
+.ww-carousel-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+/* "fit": "contain": poster portrait tampil utuh, sisi kiri-kanan krem */
+.ww-carousel-frame.is-contain img { object-fit: contain; }
+.ww-carousel-caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: block; padding: 12px 22px 14px;
+  border-top: 3px solid var(--gold); background: rgba(43, 29, 22, .9);
+  font-family: var(--font-head); font-weight: 600; font-size: 1.15rem; line-height: 1.3;
+}
+a.ww-carousel-link:hover .ww-carousel-caption { text-decoration: underline; text-decoration-color: var(--gold); text-decoration-thickness: 2px; }
+a.ww-carousel-link:focus-visible { outline-offset: -3px; }
+
+/* kontrol: hanya titik, kecil dan di tengah. Area klik tetap lebih besar
+   dari titiknya (28px; 44px di layar sentuh) supaya mudah diketuk. */
+.ww-carousel-dots { display: flex; flex-wrap: wrap; justify-content: center; margin: 4px 0 0; padding: 0; list-style: none; }
+.ww-carousel-dots[hidden] { display: none; }
+.ww-carousel-dot {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 28px; padding: 0; border: 0; background: transparent;
+}
+/* titik: lingkaran polos; titik aktif memakai motif sasaran panahan */
+.ww-carousel-dot::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line); box-shadow: inset 0 0 0 1.5px var(--ink-soft);
+  transition: background-color .15s;
+}
+.ww-carousel-dot:hover::before { background: var(--gold); }
+.ww-carousel-dot:active::before { transform: scale(.8); }
+.ww-carousel-dot[aria-current="true"]::before {
+  width: 12px; height: 12px;
+  background: radial-gradient(circle, var(--red) 0 1.8px, var(--surface) 2.2px 3.2px,
+    var(--gold) 3.6px 4.6px, var(--surface) 5px 6px);
+  box-shadow: 0 0 0 1.5px var(--gold);
+}
+@media (pointer: coarse) {
+  .ww-carousel-dot { width: 28px; height: 44px; }
+}
+
 /* blok & judul bagian */
 .ww-block { margin-bottom: 36px; }
 .ww-block > :last-child { margin-bottom: 0; }
@@ -665,6 +720,8 @@ body.lightbox-open { overflow: hidden; }
   .ww-home .ww-main { grid-template-columns: minmax(0, 1fr); }
 
   .ww-hero-media { border-radius: var(--r-md); }
+  .ww-carousel-viewport { border-radius: var(--r-md); }
+  .ww-carousel-caption { padding: 8px 14px 9px; font-size: .95rem; }
   .ww-hero-body { margin: -36px 12px 0; padding: 18px 18px 20px; }
 
   .ww-content { padding: 22px 18px 28px; border-radius: var(--r-md); }
@@ -683,5 +740,6 @@ body.lightbox-open { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  .ww-carousel-dot:active::before { transform: none; }
   .ww-item-link:hover .ww-thumb img, .news-card:hover .news-card-thumb img { transform: none; }
 }
